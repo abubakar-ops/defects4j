@@ -1,0 +1,8 @@
+org/joda/time/Partial.java,buggy,218
+org/joda/time/Partial.java,fixed,218
+org/joda/time/Partial.java,fixed,449
+org/joda/time/Partial.java,fixed,450
+org/joda/time/Partial.java,fixed,451
+org/joda/time/field/UnsupportedDurationField.java,fixed,227
+org/joda/time/field/UnsupportedDurationField.java,fixed,228
+org/joda/time/field/UnsupportedDurationField.java,fixed,229

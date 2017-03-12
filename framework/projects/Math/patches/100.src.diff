@@ -1,0 +1,6 @@
+org/apache/commons/math/estimation/AbstractEstimator.java,buggy,166
+org/apache/commons/math/estimation/AbstractEstimator.java,fixed,166
+org/apache/commons/math/estimation/AbstractEstimator.java,buggy,202
+org/apache/commons/math/estimation/AbstractEstimator.java,fixed,202
+org/apache/commons/math/estimation/AbstractEstimator.java,buggy,207
+org/apache/commons/math/estimation/AbstractEstimator.java,fixed,207

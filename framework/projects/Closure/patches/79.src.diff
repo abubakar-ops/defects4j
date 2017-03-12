@@ -1,0 +1,3 @@
+com/google/javascript/jscomp/VarCheck.java,fixed,221
+com/google/javascript/jscomp/Normalize.java,buggy,122
+com/google/javascript/jscomp/Normalize.java,fixed,122

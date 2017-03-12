@@ -1,0 +1,14 @@
+org/jfree/data/DefaultKeyedValues.java,buggy,318
+org/jfree/data/DefaultKeyedValues.java,buggy,321
+org/jfree/data/DefaultKeyedValues.java,buggy,335
+org/jfree/data/DefaultKeyedValues.java,fixed,333
+org/jfree/data/DefaultKeyedValues.java,fixed,334
+org/jfree/data/DefaultKeyedValues2D.java,fixed,455
+org/jfree/data/DefaultKeyedValues2D.java,fixed,456
+org/jfree/data/DefaultKeyedValues2D.java,fixed,457
+org/jfree/data/DefaultKeyedValues2D.java,fixed,458
+org/jfree/data/DefaultKeyedValues2D.java,fixed,459
+org/jfree/data/DefaultKeyedValues2D.java,fixed,460
+org/jfree/data/DefaultKeyedValues2D.java,fixed,464
+org/jfree/data/DefaultKeyedValues2D.java,fixed,465
+org/jfree/data/DefaultKeyedValues2D.java,fixed,467

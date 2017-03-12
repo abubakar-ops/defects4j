@@ -1,0 +1,4 @@
+org/apache/commons/math/distribution/PoissonDistributionImpl.java,buggy,22
+org/apache/commons/math/distribution/PoissonDistributionImpl.java,fixed,22
+org/apache/commons/math/distribution/PoissonDistributionImpl.java,buggy,94
+org/apache/commons/math/distribution/PoissonDistributionImpl.java,fixed,94

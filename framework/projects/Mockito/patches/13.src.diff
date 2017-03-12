@@ -1,0 +1,4 @@
+org/mockito/internal/MockHandler.java,buggy,77
+org/mockito/internal/MockHandler.java,fixed,77
+org/mockito/internal/MockHandler.java,fixed,81
+org/mockito/internal/MockHandler.java,fixed,84

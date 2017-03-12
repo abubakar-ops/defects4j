@@ -1,0 +1,11 @@
+com/google/javascript/jscomp/SourceMap.java,fixed,138
+com/google/javascript/jscomp/SourceMap.java,fixed,139
+com/google/javascript/jscomp/SourceMap.java,fixed,140
+com/google/javascript/jscomp/SourceMap.java,fixed,141
+com/google/javascript/jscomp/SourceMap.java,fixed,142
+com/google/javascript/jscomp/SourceMap.java,buggy,141
+com/google/javascript/jscomp/SourceMap.java,fixed,146
+com/google/debugging/sourcemap/SourceMapConsumerV3.java,buggy,489
+com/google/debugging/sourcemap/SourceMapConsumerV3.java,buggy,490
+com/google/debugging/sourcemap/SourceMapConsumerV3.java,fixed,489
+com/google/debugging/sourcemap/SourceMapConsumerV3.java,fixed,490

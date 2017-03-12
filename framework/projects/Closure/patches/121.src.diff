@@ -1,0 +1,4 @@
+com/google/javascript/jscomp/InlineVariables.java,buggy,304
+com/google/javascript/jscomp/InlineVariables.java,fixed,304
+com/google/javascript/jscomp/InlineVariables.java,fixed,308
+com/google/javascript/jscomp/InlineVariables.java,fixed,309

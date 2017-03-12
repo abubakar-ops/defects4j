@@ -1,0 +1,15 @@
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,17
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,buggy,71
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,72
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,buggy,87
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,88
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,89
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,buggy,90
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,92
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,buggy,94
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,96
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,buggy,99
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,101
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,105
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,106
+org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java,fixed,107

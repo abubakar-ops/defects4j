@@ -1,0 +1,6 @@
+com/google/javascript/rhino/JSDocInfoBuilder.java,buggy,189
+com/google/javascript/rhino/JSDocInfoBuilder.java,buggy,191
+com/google/javascript/jscomp/GlobalNamespace.java,fixed,907
+com/google/javascript/jscomp/GlobalNamespace.java,fixed,908
+com/google/javascript/jscomp/GlobalNamespace.java,fixed,909
+com/google/javascript/jscomp/GlobalNamespace.java,fixed,910

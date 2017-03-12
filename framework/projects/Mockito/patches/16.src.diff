@@ -1,0 +1,9 @@
+org/mockito/Mockito.java,buggy,827
+org/mockito/Mockito.java,fixed,827
+org/mockito/Mockito.java,buggy,899
+org/mockito/Mockito.java,fixed,899
+org/mockito/internal/MockitoCore.java,buggy,32
+org/mockito/internal/MockitoCore.java,buggy,33
+org/mockito/internal/MockitoCore.java,fixed,32
+org/mockito/internal/MockitoCore.java,fixed,34
+org/mockito/internal/MockitoCore.java,fixed,36

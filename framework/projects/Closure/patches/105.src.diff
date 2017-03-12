@@ -1,0 +1,12 @@
+com/google/javascript/jscomp/FoldConstants.java,buggy,1477
+com/google/javascript/jscomp/FoldConstants.java,fixed,1477
+com/google/javascript/jscomp/FoldConstants.java,buggy,1483
+com/google/javascript/jscomp/FoldConstants.java,fixed,1483
+com/google/javascript/jscomp/FoldConstants.java,fixed,1484
+com/google/javascript/jscomp/FoldConstants.java,fixed,1485
+com/google/javascript/jscomp/FoldConstants.java,buggy,1488
+com/google/javascript/jscomp/FoldConstants.java,fixed,1490
+com/google/javascript/jscomp/FoldConstants.java,buggy,1492
+com/google/javascript/jscomp/FoldConstants.java,fixed,1494
+com/google/javascript/jscomp/FoldConstants.java,buggy,1500
+com/google/javascript/jscomp/FoldConstants.java,fixed,1502

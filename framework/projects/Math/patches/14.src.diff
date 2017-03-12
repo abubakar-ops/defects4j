@@ -1,0 +1,14 @@
+org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java,fixed,267
+org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java,fixed,268
+org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java,fixed,269
+org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java,fixed,270
+org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java,fixed,271
+org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java,fixed,272
+org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java,fixed,273
+org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java,fixed,274
+org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java,fixed,277
+org/apache/commons/math3/optim/nonlinear/vector/Weight.java,buggy,43
+org/apache/commons/math3/optim/nonlinear/vector/Weight.java,buggy,44
+org/apache/commons/math3/optim/nonlinear/vector/Weight.java,buggy,45
+org/apache/commons/math3/optim/nonlinear/vector/Weight.java,buggy,46
+org/apache/commons/math3/optim/nonlinear/vector/Weight.java,fixed,43

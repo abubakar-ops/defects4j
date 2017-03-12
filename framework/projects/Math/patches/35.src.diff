@@ -1,0 +1,4 @@
+org/apache/commons/math3/genetics/ElitisticListPopulation.java,buggy,51
+org/apache/commons/math3/genetics/ElitisticListPopulation.java,fixed,51
+org/apache/commons/math3/genetics/ElitisticListPopulation.java,buggy,65
+org/apache/commons/math3/genetics/ElitisticListPopulation.java,fixed,65

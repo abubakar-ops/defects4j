@@ -1,0 +1,12 @@
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,fixed,71
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,buggy,396
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,fixed,397
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,fixed,399
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,fixed,400
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,fixed,401
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,fixed,405
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,fixed,435
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,fixed,436
+com/google/javascript/jscomp/MustBeReachingVariableDef.java,fixed,437
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,buggy,157
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,fixed,157

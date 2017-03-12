@@ -1,0 +1,12 @@
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,buggy,40
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,fixed,40
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,fixed,50
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,fixed,51
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,fixed,52
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,buggy,54
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,fixed,57
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,fixed,58
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,fixed,59
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,fixed,84
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,buggy,80
+org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java,fixed,86

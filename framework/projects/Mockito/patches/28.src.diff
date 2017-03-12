@@ -1,0 +1,3 @@
+org/mockito/internal/configuration/DefaultInjectionEngine.java,buggy,93
+org/mockito/internal/configuration/DefaultInjectionEngine.java,fixed,93
+org/mockito/internal/configuration/DefaultInjectionEngine.java,fixed,94

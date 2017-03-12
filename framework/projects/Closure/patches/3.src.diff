@@ -1,0 +1,10 @@
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,buggy,155
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,fixed,155
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,buggy,280
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,fixed,280
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,fixed,375
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,fixed,376
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,fixed,377
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,fixed,378
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,fixed,379
+com/google/javascript/jscomp/FlowSensitiveInlineVariables.java,fixed,380

@@ -1,0 +1,12 @@
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,buggy,83
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,fixed,83
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,fixed,89
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,fixed,90
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,buggy,90
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,buggy,94
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,buggy,96
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,buggy,97
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,buggy,99
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,buggy,100
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,buggy,101
+org/apache/commons/lang3/text/translate/CharSequenceTranslator.java,buggy,102

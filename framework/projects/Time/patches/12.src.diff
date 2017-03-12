@@ -1,0 +1,16 @@
+org/joda/time/LocalDate.java,fixed,210
+org/joda/time/LocalDate.java,buggy,212
+org/joda/time/LocalDate.java,fixed,213
+org/joda/time/LocalDate.java,fixed,244
+org/joda/time/LocalDate.java,fixed,246
+org/joda/time/LocalDate.java,fixed,247
+org/joda/time/LocalDate.java,fixed,248
+org/joda/time/LocalDate.java,fixed,249
+org/joda/time/LocalDateTime.java,fixed,199
+org/joda/time/LocalDateTime.java,buggy,201
+org/joda/time/LocalDateTime.java,fixed,202
+org/joda/time/LocalDateTime.java,fixed,237
+org/joda/time/LocalDateTime.java,fixed,239
+org/joda/time/LocalDateTime.java,fixed,240
+org/joda/time/LocalDateTime.java,fixed,241
+org/joda/time/LocalDateTime.java,fixed,242

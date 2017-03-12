@@ -1,0 +1,6 @@
+org/joda/time/format/PeriodFormatterBuilder.java,buggy,1098
+org/joda/time/format/PeriodFormatterBuilder.java,fixed,1098
+org/joda/time/format/PeriodFormatterBuilder.java,fixed,1133
+org/joda/time/format/PeriodFormatterBuilder.java,fixed,1143
+org/joda/time/format/PeriodFormatterBuilder.java,fixed,1144
+org/joda/time/format/PeriodFormatterBuilder.java,fixed,1145

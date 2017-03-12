@@ -1,0 +1,4 @@
+org/apache/commons/math/distribution/FDistributionImpl.java,buggy,144
+org/apache/commons/math/distribution/FDistributionImpl.java,fixed,144
+org/apache/commons/math/distribution/FDistributionImpl.java,fixed,146
+org/apache/commons/math/distribution/FDistributionImpl.java,fixed,149

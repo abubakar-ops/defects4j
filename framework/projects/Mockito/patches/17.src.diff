@@ -1,0 +1,11 @@
+org/mockito/internal/creation/MockSettingsImpl.java,fixed,20
+org/mockito/internal/creation/MockSettingsImpl.java,buggy,22
+org/mockito/internal/creation/MockSettingsImpl.java,fixed,23
+org/mockito/internal/creation/MockSettingsImpl.java,fixed,24
+org/mockito/internal/creation/MockSettingsImpl.java,buggy,74
+org/mockito/internal/creation/MockSettingsImpl.java,fixed,76
+org/mockito/internal/util/MockUtil.java,fixed,19
+org/mockito/internal/util/MockUtil.java,fixed,46
+org/mockito/internal/util/MockUtil.java,fixed,47
+org/mockito/internal/util/MockUtil.java,fixed,48
+org/mockito/internal/util/MockUtil.java,fixed,50

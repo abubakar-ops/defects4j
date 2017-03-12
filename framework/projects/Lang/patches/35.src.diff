@@ -1,0 +1,4 @@
+org/apache/commons/lang3/ArrayUtils.java,buggy,3295
+org/apache/commons/lang3/ArrayUtils.java,fixed,3295
+org/apache/commons/lang3/ArrayUtils.java,buggy,3574
+org/apache/commons/lang3/ArrayUtils.java,fixed,3574

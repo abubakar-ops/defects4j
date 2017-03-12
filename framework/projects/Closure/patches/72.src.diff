@@ -1,0 +1,4 @@
+com/google/javascript/jscomp/FunctionToBlockMutator.java,fixed,152
+com/google/javascript/jscomp/FunctionToBlockMutator.java,fixed,153
+com/google/javascript/jscomp/RenameLabels.java,buggy,215
+com/google/javascript/jscomp/RenameLabels.java,fixed,215

@@ -1,0 +1,4 @@
+org/apache/commons/math/linear/BigMatrixImpl.java,buggy,991
+org/apache/commons/math/linear/BigMatrixImpl.java,fixed,991
+org/apache/commons/math/linear/RealMatrixImpl.java,buggy,779
+org/apache/commons/math/linear/RealMatrixImpl.java,fixed,779

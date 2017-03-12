@@ -1,0 +1,13 @@
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,126
+org/apache/commons/math/distribution/NormalDistributionImpl.java,fixed,126
+org/apache/commons/math/distribution/NormalDistributionImpl.java,fixed,127
+org/apache/commons/math/distribution/NormalDistributionImpl.java,fixed,128
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,129
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,130
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,131
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,132
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,133
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,134
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,135
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,136
+org/apache/commons/math/distribution/NormalDistributionImpl.java,buggy,137

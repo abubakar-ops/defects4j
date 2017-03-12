@@ -1,0 +1,10 @@
+org/mockito/internal/creation/DelegatingMethod.java,fixed,55
+org/mockito/internal/creation/DelegatingMethod.java,fixed,56
+org/mockito/internal/creation/DelegatingMethod.java,fixed,57
+org/mockito/internal/creation/DelegatingMethod.java,fixed,58
+org/mockito/internal/creation/DelegatingMethod.java,fixed,59
+org/mockito/internal/creation/DelegatingMethod.java,fixed,60
+org/mockito/internal/creation/DelegatingMethod.java,fixed,61
+org/mockito/internal/creation/DelegatingMethod.java,fixed,64
+org/mockito/internal/creation/DelegatingMethod.java,buggy,60
+org/mockito/internal/creation/DelegatingMethod.java,fixed,68

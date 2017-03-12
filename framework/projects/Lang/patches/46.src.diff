@@ -1,0 +1,17 @@
+org/apache/commons/lang/StringEscapeUtils.java,buggy,86
+org/apache/commons/lang/StringEscapeUtils.java,fixed,86
+org/apache/commons/lang/StringEscapeUtils.java,buggy,102
+org/apache/commons/lang/StringEscapeUtils.java,fixed,102
+org/apache/commons/lang/StringEscapeUtils.java,buggy,127
+org/apache/commons/lang/StringEscapeUtils.java,fixed,127
+org/apache/commons/lang/StringEscapeUtils.java,buggy,143
+org/apache/commons/lang/StringEscapeUtils.java,fixed,143
+org/apache/commons/lang/StringEscapeUtils.java,buggy,154
+org/apache/commons/lang/StringEscapeUtils.java,fixed,154
+org/apache/commons/lang/StringEscapeUtils.java,buggy,160
+org/apache/commons/lang/StringEscapeUtils.java,fixed,160
+org/apache/commons/lang/StringEscapeUtils.java,buggy,178
+org/apache/commons/lang/StringEscapeUtils.java,fixed,178
+org/apache/commons/lang/StringEscapeUtils.java,fixed,179
+org/apache/commons/lang/StringEscapeUtils.java,fixed,245
+org/apache/commons/lang/StringEscapeUtils.java,fixed,247

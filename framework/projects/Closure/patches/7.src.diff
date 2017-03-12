@@ -1,0 +1,6 @@
+com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java,buggy,613
+com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java,fixed,613
+com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java,fixed,615
+com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java,fixed,616
+com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java,fixed,618
+com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java,fixed,619

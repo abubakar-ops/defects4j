@@ -1,0 +1,6 @@
+org/apache/commons/lang3/time/FastDateFormat.java,buggy,495
+org/apache/commons/lang3/time/FastDateFormat.java,buggy,496
+org/apache/commons/lang3/time/FastDateFormat.java,buggy,497
+org/apache/commons/lang3/time/FastDateFormat.java,fixed,495
+org/apache/commons/lang3/time/FastDateFormat.java,fixed,497
+org/apache/commons/lang3/time/FastDateFormat.java,fixed,498

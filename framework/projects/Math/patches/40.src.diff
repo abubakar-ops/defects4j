@@ -1,0 +1,10 @@
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,buggy,235
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,fixed,235
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,fixed,236
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,fixed,237
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,fixed,238
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,buggy,238
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,fixed,241
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,fixed,242
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,fixed,243
+org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java,fixed,244

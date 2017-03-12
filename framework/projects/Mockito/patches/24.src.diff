@@ -1,0 +1,2 @@
+org/mockito/internal/stubbing/defaultanswers/ReturnsEmptyValues.java,buggy,76
+org/mockito/internal/stubbing/defaultanswers/ReturnsEmptyValues.java,fixed,76

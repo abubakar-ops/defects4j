@@ -1,0 +1,11 @@
+org/apache/commons/math/optimization/linear/SimplexTableau.java,fixed,329
+org/apache/commons/math/optimization/linear/SimplexTableau.java,fixed,332
+org/apache/commons/math/optimization/linear/SimplexTableau.java,fixed,335
+org/apache/commons/math/optimization/linear/SimplexTableau.java,fixed,336
+org/apache/commons/math/optimization/linear/SimplexTableau.java,fixed,337
+org/apache/commons/math/optimization/linear/SimplexTableau.java,buggy,336
+org/apache/commons/math/optimization/linear/SimplexTableau.java,buggy,337
+org/apache/commons/math/optimization/linear/SimplexTableau.java,buggy,338
+org/apache/commons/math/optimization/linear/SimplexTableau.java,buggy,339
+org/apache/commons/math/optimization/linear/SimplexTableau.java,buggy,340
+org/apache/commons/math/optimization/linear/SimplexTableau.java,buggy,341

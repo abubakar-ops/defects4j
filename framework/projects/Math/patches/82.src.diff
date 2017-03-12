@@ -1,0 +1,2 @@
+org/apache/commons/math/optimization/linear/SimplexSolver.java,buggy,82
+org/apache/commons/math/optimization/linear/SimplexSolver.java,fixed,82

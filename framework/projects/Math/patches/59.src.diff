@@ -1,0 +1,2 @@
+org/apache/commons/math/util/FastMath.java,buggy,3482
+org/apache/commons/math/util/FastMath.java,fixed,3482

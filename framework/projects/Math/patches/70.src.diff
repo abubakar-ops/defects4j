@@ -1,0 +1,2 @@
+org/apache/commons/math/analysis/solvers/BisectionSolver.java,buggy,72
+org/apache/commons/math/analysis/solvers/BisectionSolver.java,fixed,72

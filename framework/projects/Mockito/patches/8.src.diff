@@ -1,0 +1,2 @@
+org/mockito/internal/util/reflection/GenericMetadataSupport.java,buggy,79
+org/mockito/internal/util/reflection/GenericMetadataSupport.java,fixed,79

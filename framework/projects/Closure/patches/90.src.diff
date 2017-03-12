@@ -1,0 +1,5 @@
+com/google/javascript/rhino/jstype/FunctionType.java,fixed,880
+com/google/javascript/rhino/jstype/FunctionType.java,fixed,881
+com/google/javascript/rhino/jstype/FunctionType.java,fixed,882
+com/google/javascript/jscomp/FunctionTypeBuilder.java,buggy,184
+com/google/javascript/jscomp/FunctionTypeBuilder.java,fixed,184

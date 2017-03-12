@@ -1,0 +1,9 @@
+org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java,buggy,240
+org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java,buggy,241
+org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java,buggy,242
+org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java,buggy,243
+org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java,buggy,244
+org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java,buggy,245
+org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java,fixed,240
+org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java,buggy,258
+org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java,fixed,253

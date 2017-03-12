@@ -1,0 +1,6 @@
+com/google/javascript/jscomp/parsing/IRFactory.java,fixed,667
+com/google/javascript/jscomp/parsing/IRFactory.java,fixed,671
+com/google/javascript/jscomp/parsing/IRFactory.java,fixed,672
+com/google/javascript/jscomp/parsing/IRFactory.java,fixed,673
+com/google/javascript/jscomp/NodeTraversal.java,buggy,541
+com/google/javascript/jscomp/NodeTraversal.java,fixed,541

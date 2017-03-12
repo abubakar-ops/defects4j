@@ -1,0 +1,8 @@
+com/google/javascript/jscomp/CodeGenerator.java,buggy,122
+com/google/javascript/jscomp/CodeGenerator.java,buggy,123
+com/google/javascript/jscomp/CodeGenerator.java,buggy,124
+com/google/javascript/jscomp/CodeGenerator.java,fixed,122
+com/google/javascript/jscomp/CodeGenerator.java,buggy,754
+com/google/javascript/jscomp/CodeGenerator.java,fixed,752
+com/google/javascript/jscomp/CodePrinter.java,buggy,334
+com/google/javascript/jscomp/CodePrinter.java,fixed,334

@@ -1,0 +1,8 @@
+org/apache/commons/lang3/reflect/TypeUtils.java,buggy,219
+org/apache/commons/lang3/reflect/TypeUtils.java,buggy,220
+org/apache/commons/lang3/reflect/TypeUtils.java,buggy,221
+org/apache/commons/lang3/reflect/TypeUtils.java,fixed,219
+org/apache/commons/lang3/reflect/TypeUtils.java,fixed,220
+org/apache/commons/lang3/reflect/TypeUtils.java,fixed,221
+org/apache/commons/lang3/reflect/TypeUtils.java,buggy,675
+org/apache/commons/lang3/reflect/TypeUtils.java,fixed,675

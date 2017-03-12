@@ -1,0 +1,11 @@
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,fixed,151
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,fixed,235
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,fixed,236
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,fixed,237
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,fixed,238
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,fixed,239
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,buggy,237
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,fixed,243
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,buggy,274
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,fixed,280
+org/apache/commons/math3/optimization/univariate/BrentOptimizer.java,fixed,283

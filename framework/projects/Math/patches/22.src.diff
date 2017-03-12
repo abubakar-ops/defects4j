@@ -1,0 +1,4 @@
+org/apache/commons/math3/distribution/UniformRealDistribution.java,buggy,184
+org/apache/commons/math3/distribution/UniformRealDistribution.java,fixed,184
+org/apache/commons/math3/distribution/FDistribution.java,buggy,275
+org/apache/commons/math3/distribution/FDistribution.java,fixed,275

@@ -1,0 +1,4 @@
+org/apache/commons/math3/distribution/DiscreteDistribution.java,buggy,181
+org/apache/commons/math3/distribution/DiscreteDistribution.java,fixed,181
+org/apache/commons/math3/distribution/DiscreteDistribution.java,buggy,187
+org/apache/commons/math3/distribution/DiscreteDistribution.java,fixed,187

@@ -1,0 +1,7 @@
+org/apache/commons/math/ode/AbstractIntegrator.java,buggy,280
+org/apache/commons/math/ode/AbstractIntegrator.java,fixed,333
+org/apache/commons/math/ode/AbstractIntegrator.java,fixed,334
+org/apache/commons/math/ode/AbstractIntegrator.java,fixed,335
+org/apache/commons/math/ode/AbstractIntegrator.java,fixed,345
+org/apache/commons/math/ode/AbstractIntegrator.java,fixed,346
+org/apache/commons/math/ode/AbstractIntegrator.java,fixed,347

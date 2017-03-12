@@ -1,0 +1,4 @@
+org/apache/commons/math/complex/Complex.java,buggy,260
+org/apache/commons/math/complex/Complex.java,fixed,260
+org/apache/commons/math/complex/Complex.java,buggy,297
+org/apache/commons/math/complex/Complex.java,fixed,297

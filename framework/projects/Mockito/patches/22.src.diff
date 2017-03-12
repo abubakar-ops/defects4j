@@ -1,0 +1,4 @@
+org/mockito/internal/matchers/Equality.java,buggy,13
+org/mockito/internal/matchers/Equality.java,fixed,13
+org/mockito/internal/matchers/Equality.java,fixed,14
+org/mockito/internal/matchers/Equality.java,fixed,15

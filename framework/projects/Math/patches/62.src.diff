@@ -1,0 +1,7 @@
+org/apache/commons/math/optimization/univariate/MultiStartUnivariateRealOptimizer.java,buggy,146
+org/apache/commons/math/optimization/univariate/MultiStartUnivariateRealOptimizer.java,fixed,146
+org/apache/commons/math/optimization/univariate/MultiStartUnivariateRealOptimizer.java,buggy,160
+org/apache/commons/math/optimization/univariate/MultiStartUnivariateRealOptimizer.java,buggy,161
+org/apache/commons/math/optimization/univariate/MultiStartUnivariateRealOptimizer.java,buggy,162
+org/apache/commons/math/optimization/univariate/MultiStartUnivariateRealOptimizer.java,fixed,160
+org/apache/commons/math/optimization/univariate/MultiStartUnivariateRealOptimizer.java,fixed,161

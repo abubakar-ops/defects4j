@@ -1,0 +1,15 @@
+com/google/javascript/jscomp/TypedScopeCreator.java,buggy,1413
+com/google/javascript/jscomp/TypedScopeCreator.java,fixed,1413
+com/google/javascript/jscomp/TypedScopeCreator.java,fixed,1414
+com/google/javascript/jscomp/TypedScopeCreator.java,fixed,1415
+com/google/javascript/jscomp/TypedScopeCreator.java,fixed,1416
+com/google/javascript/jscomp/TypedScopeCreator.java,fixed,1417
+com/google/javascript/jscomp/TypedScopeCreator.java,fixed,1418
+com/google/javascript/jscomp/TypedScopeCreator.java,fixed,1419
+com/google/javascript/rhino/jstype/FunctionType.java,buggy,341
+com/google/javascript/rhino/jstype/FunctionType.java,buggy,366
+com/google/javascript/rhino/jstype/FunctionType.java,fixed,365
+com/google/javascript/rhino/jstype/FunctionType.java,fixed,366
+com/google/javascript/rhino/jstype/FunctionType.java,fixed,372
+com/google/javascript/rhino/jstype/FunctionType.java,fixed,375
+com/google/javascript/rhino/jstype/FunctionType.java,fixed,376

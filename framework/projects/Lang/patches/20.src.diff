@@ -1,0 +1,4 @@
+org/apache/commons/lang3/StringUtils.java,buggy,3298
+org/apache/commons/lang3/StringUtils.java,fixed,3298
+org/apache/commons/lang3/StringUtils.java,buggy,3383
+org/apache/commons/lang3/StringUtils.java,fixed,3383

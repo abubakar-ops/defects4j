@@ -1,0 +1,16 @@
+org/apache/commons/lang/time/FastDateFormat.java,buggy,285
+org/apache/commons/lang/time/FastDateFormat.java,buggy,286
+org/apache/commons/lang/time/FastDateFormat.java,fixed,285
+org/apache/commons/lang/time/FastDateFormat.java,fixed,286
+org/apache/commons/lang/time/FastDateFormat.java,fixed,289
+org/apache/commons/lang/time/FastDateFormat.java,buggy,292
+org/apache/commons/lang/time/FastDateFormat.java,buggy,293
+org/apache/commons/lang/time/FastDateFormat.java,buggy,294
+org/apache/commons/lang/time/FastDateFormat.java,buggy,465
+org/apache/commons/lang/time/FastDateFormat.java,buggy,466
+org/apache/commons/lang/time/FastDateFormat.java,fixed,463
+org/apache/commons/lang/time/FastDateFormat.java,fixed,464
+org/apache/commons/lang/time/FastDateFormat.java,fixed,466
+org/apache/commons/lang/time/FastDateFormat.java,buggy,471
+org/apache/commons/lang/time/FastDateFormat.java,buggy,472
+org/apache/commons/lang/time/FastDateFormat.java,buggy,473

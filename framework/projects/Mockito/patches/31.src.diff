@@ -1,0 +1,4 @@
+org/mockito/internal/stubbing/defaultanswers/ReturnsSmartNulls.java,fixed,9
+org/mockito/internal/stubbing/defaultanswers/ReturnsSmartNulls.java,buggy,60
+org/mockito/internal/stubbing/defaultanswers/ReturnsSmartNulls.java,fixed,61
+org/mockito/internal/stubbing/defaultanswers/ReturnsSmartNulls.java,fixed,62

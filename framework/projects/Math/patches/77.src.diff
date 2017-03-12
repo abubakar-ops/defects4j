@@ -1,0 +1,11 @@
+org/apache/commons/math/linear/ArrayRealVector.java,buggy,721
+org/apache/commons/math/linear/ArrayRealVector.java,fixed,721
+org/apache/commons/math/linear/OpenMapRealVector.java,buggy,498
+org/apache/commons/math/linear/OpenMapRealVector.java,buggy,499
+org/apache/commons/math/linear/OpenMapRealVector.java,buggy,500
+org/apache/commons/math/linear/OpenMapRealVector.java,buggy,501
+org/apache/commons/math/linear/OpenMapRealVector.java,buggy,502
+org/apache/commons/math/linear/OpenMapRealVector.java,buggy,503
+org/apache/commons/math/linear/OpenMapRealVector.java,buggy,504
+org/apache/commons/math/linear/OpenMapRealVector.java,buggy,505
+org/apache/commons/math/linear/OpenMapRealVector.java,buggy,506

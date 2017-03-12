@@ -1,0 +1,6 @@
+org/jfree/data/category/DefaultIntervalCategoryDataset.java,buggy,207
+org/jfree/data/category/DefaultIntervalCategoryDataset.java,buggy,208
+org/jfree/data/category/DefaultIntervalCategoryDataset.java,fixed,207
+org/jfree/data/category/DefaultIntervalCategoryDataset.java,fixed,208
+org/jfree/data/category/DefaultIntervalCategoryDataset.java,buggy,338
+org/jfree/data/category/DefaultIntervalCategoryDataset.java,fixed,338

@@ -1,0 +1,17 @@
+org/apache/commons/math3/ode/AbstractIntegrator.java,buggy,346
+org/apache/commons/math3/ode/AbstractIntegrator.java,buggy,347
+org/apache/commons/math3/ode/AbstractIntegrator.java,fixed,346
+org/apache/commons/math3/ode/AbstractIntegrator.java,fixed,347
+org/apache/commons/math3/ode/AbstractIntegrator.java,fixed,348
+org/apache/commons/math3/ode/AbstractIntegrator.java,fixed,349
+org/apache/commons/math3/ode/AbstractIntegrator.java,buggy,357
+org/apache/commons/math3/ode/AbstractIntegrator.java,buggy,358
+org/apache/commons/math3/ode/AbstractIntegrator.java,buggy,359
+org/apache/commons/math3/ode/AbstractIntegrator.java,buggy,363
+org/apache/commons/math3/ode/AbstractIntegrator.java,fixed,362
+org/apache/commons/math3/ode/AbstractIntegrator.java,fixed,363
+org/apache/commons/math3/ode/AbstractIntegrator.java,fixed,364
+org/apache/commons/math3/ode/AbstractIntegrator.java,fixed,365
+org/apache/commons/math3/ode/AbstractIntegrator.java,buggy,370
+org/apache/commons/math3/ode/AbstractIntegrator.java,buggy,371
+org/apache/commons/math3/ode/AbstractIntegrator.java,buggy,372

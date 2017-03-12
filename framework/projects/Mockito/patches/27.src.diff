@@ -1,0 +1,3 @@
+org/mockito/internal/util/MockUtil.java,buggy,64
+org/mockito/internal/util/MockUtil.java,buggy,65
+org/mockito/internal/util/MockUtil.java,fixed,64

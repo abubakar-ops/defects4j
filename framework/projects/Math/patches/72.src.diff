@@ -1,0 +1,4 @@
+org/apache/commons/math/analysis/solvers/BrentSolver.java,buggy,115
+org/apache/commons/math/analysis/solvers/BrentSolver.java,fixed,115
+org/apache/commons/math/analysis/solvers/BrentSolver.java,buggy,127
+org/apache/commons/math/analysis/solvers/BrentSolver.java,fixed,127

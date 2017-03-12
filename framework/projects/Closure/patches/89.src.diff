@@ -1,0 +1,5 @@
+com/google/javascript/jscomp/GlobalNamespace.java,buggy,920
+com/google/javascript/jscomp/GlobalNamespace.java,fixed,920
+com/google/javascript/jscomp/CollapseProperties.java,fixed,484
+com/google/javascript/jscomp/CollapseProperties.java,fixed,485
+com/google/javascript/jscomp/CollapseProperties.java,fixed,486

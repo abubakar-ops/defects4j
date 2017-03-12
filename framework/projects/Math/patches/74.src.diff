@@ -1,0 +1,11 @@
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,buggy,245
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,fixed,245
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,buggy,247
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,buggy,248
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,fixed,247
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,fixed,248
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,fixed,249
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,buggy,250
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,fixed,251
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,fixed,252
+org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java,fixed,253

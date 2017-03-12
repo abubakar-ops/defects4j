@@ -1,0 +1,3 @@
+org/joda/time/base/BaseSingleFieldPeriod.java,fixed,52
+org/joda/time/base/BaseSingleFieldPeriod.java,buggy,104
+org/joda/time/base/BaseSingleFieldPeriod.java,fixed,105

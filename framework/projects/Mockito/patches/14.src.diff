@@ -1,0 +1,6 @@
+org/mockito/internal/MockHandler.java,fixed,20
+org/mockito/internal/MockHandler.java,fixed,77
+org/mockito/internal/MockHandler.java,fixed,81
+org/mockito/internal/MockitoCore.java,fixed,23
+org/mockito/internal/MockitoCore.java,buggy,73
+org/mockito/internal/MockitoCore.java,fixed,74

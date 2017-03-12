@@ -1,0 +1,3 @@
+com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java,buggy,220
+com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java,fixed,220
+com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java,fixed,221

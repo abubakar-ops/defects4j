@@ -1,0 +1,2 @@
+org/mockito/internal/matchers/Same.java,buggy,29
+org/mockito/internal/matchers/Same.java,fixed,29

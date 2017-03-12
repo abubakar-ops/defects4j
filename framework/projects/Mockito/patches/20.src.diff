@@ -1,0 +1,5 @@
+org/mockito/internal/creation/bytebuddy/ByteBuddyMockMaker.java,fixed,32
+org/mockito/internal/creation/bytebuddy/ByteBuddyMockMaker.java,buggy,34
+org/mockito/internal/creation/bytebuddy/ByteBuddyMockMaker.java,fixed,35
+org/mockito/internal/creation/bytebuddy/ByteBuddyMockMaker.java,buggy,45
+org/mockito/internal/creation/bytebuddy/ByteBuddyMockMaker.java,fixed,46
