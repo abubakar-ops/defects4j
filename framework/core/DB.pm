@@ -106,6 +106,16 @@ our $TAB_COVERAGE = ($ENV{TAB_COVERAGE} or "coverage");
 
 =pod
 
+=item B<TAB_BUG_COVERED>
+
+The name of the database table for the results of whether a test suite covers a bug (I<bug_covered>)
+B<Temporary table: TODO: Merge with TAB_COVERAGE>
+
+=cut
+our $TAB_BUG_COVERED = ($ENV{TAB_BUG_COVERED} or "bug_covered");
+
+=pod
+
 =item C<TAB_CODE_EVOLUTION>
 
 The name of the database table for the results of running code evolution analysis (I<code_evolution>)
@@ -181,6 +191,8 @@ $TAB_BUG_DETECTION => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $TEST_CLASS, $NUM_T
 $TAB_MUTATION => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $MUT_GEN, $MUT_COV, $MUT_KILL],
 # Table TAB_COVERAGE
 $TAB_COVERAGE => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $LINES_TOTAL, $LINES_COVERED, $BRANCHES_TOTAL, $BRANCHES_COVERED],
+# TODO: Merge with TAB_COVERAGE
+$TAB_BUG_COVERED => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $BUGGY_COVERED, $FIXED_COVERED],
 # Table TAB_CODE_EVOLUTION
 $TAB_CODE_EVOLUTION => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $NUM_COMMITS, $PASSED_COMMITS, $TEST_CLASS, $NUM_TRIGGER],
 );
@@ -193,6 +205,7 @@ our %PRIMARY_KEYS = (
     $TAB_BUG_DETECTION => 4,
     $TAB_MUTATION => 4,
     $TAB_COVERAGE => 4,
+    $TAB_BUG_COVERED => 4,
     $TAB_CODE_EVOLUTION => 4,
 );
 
@@ -204,6 +217,7 @@ $TAB_BUG_DETECTION
 $TAB_MUTATION
 $TAB_REVIEW
 $TAB_COVERAGE
+$TAB_BUG_COVERED
 $TAB_CODE_EVOLUTION
 
 $PROJECT
