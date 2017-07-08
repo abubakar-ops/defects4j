@@ -174,6 +174,8 @@ our $LINES_TOTAL      = "lines_total";
 our $LINES_COVERED    = "lines_covered";
 our $BRANCHES_TOTAL   = "branches_total";
 our $BRANCHES_COVERED = "branches_covered";
+our $BUGGY_COVERED    = "buggy_covered";
+our $FIXED_COVERED    = "fixed_covered";
 
 # Additional columns of TAB_CODE_EVOLUTION
 our $NUM_COMMITS      = "num_commits";
@@ -247,6 +249,8 @@ $LINES_TOTAL
 $LINES_COVERED
 $BRANCHES_TOTAL
 $BRANCHES_COVERED
+$BUGGY_COVERED
+$FIXED_COVERED
 $NUM_COMMITS
 $PASSED_COMMITS
 

@@ -189,6 +189,56 @@ sub copy_coverage_logs {
 		or die "Cannot copy .xml file";
 }
 
+=pod
+
+=over 4
+
+=item B<parse_xml_log> C<parse_xml_log(project_id, version_id, suite_src, test_id, db_dir)>
+
+Parses the coverage log file (xml) and returns a reference to a hash that 
+provides all covered and uncovered line numbers for all covered files -- returns 
+undef if the log file does not exist. The data structure of the returned hash 
+reference looks like:
+
+{org/foo/Class1.java} => {covered => [1 2 3 6 7 8], uncovered => [4 5]}
+
+{org/foo/Class2.java} => {covered => [1 2], uncovered => [3 4]}
+
+=back
+
+=cut
+sub parse_xml_log {
+    my ($pid, $vid, $suite_src, $tid, $db_dir) = @_;
+    my $xml = "$db_dir/coverage_log/$pid/$suite_src/$vid.$tid.xml";
+    -e $xml or return undef;
+
+    # Parse XML file
+    open(IN, $xml) or die "Cannot read coverage log file: $!";
+    my $file;
+    my %coverage;
+    my $hit="covered";
+    my $miss="uncovered";
+    while (<IN>) {
+        /^\s*<class name=\"([^"]+)\" filename=\"([^"]+)\" line-rate=.*$/ and $file = $2;
+        if (/^\s*<line number=\"(\d+)\" hits=\"(\d+)\" branch=\"(true|false)\".*$/) {
+            defined $file or die "Name of covered class unknown!";
+            my $line=$1;
+            my $type=($2==0 ? $miss : $hit);
+
+            unless (defined $coverage{$file}) {
+                $coverage{$file} = {};
+            }
+            unless (defined $coverage{$file}->{$type}) {
+                $coverage{$file}->{$type} = {};
+            }
+            $coverage{$file}->{$type}->{$line} = 1;
+        }
+    }
+    close IN;
+
+    return \%coverage;
+}
+
 #
 # Parse coverage log file and return reference to a hash that holds all results
 #
