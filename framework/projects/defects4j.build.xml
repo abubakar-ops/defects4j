@@ -200,9 +200,16 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
 
         <fail message="Property major.exclude not set!" unless="major.exclude" />
         <fail message="Property major.kill.log not set!" unless="major.kill.log" />
+        <fail message="Property major.summaryFile not set!" unless="major.summaryFile" />
+        <fail message="Property major.resultFile not set!" unless="major.resultFile" />
+        <fail message="Property major.exportCovMap not set!" unless="major.exportCovMap" />
+        <fail message="Property major.covMapFile not set!" unless="major.covMapFile" />
+        <fail message="Property major.exportKillMap not set!" unless="major.exportKillMap" />
+        <fail message="Property major.killMapFile not set!" unless="major.killMapFile" />
+        <fail message="Property major.testMapFile not set!" unless="major.testMapFile" />
 
         <!-- Sort test classes by run time, unless a single test method is run -->
-        <condition property="major.sort" value="original" else="sort_classes">
+        <condition property="major.sort" value="original" else="sort_methods">
             <isset property="test.entry.method"/>
         </condition>
 
@@ -218,6 +225,13 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
             haltonfailure="true"
             killDetailsFile="${major.kill.log}"
             excludeFile="${major.exclude}"
+            summaryFile="${major.summaryFile}"
+            resultFile="${major.resultFile}"
+            exportCovMap="${major.exportCovMap}"
+            covMapFile="${major.covMapFile}"
+            exportKillMap="${major.exportKillMap}"
+            killMapFile="${major.killMapFile}"
+            testMapFile="${major.testMapFile}"
             >
 
             <!--

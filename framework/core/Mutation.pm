@@ -49,6 +49,16 @@ my $EXCL_FILE = "exclude.txt";
 my $KILL_FILE = "kill.csv";
 # Name of file that provides a summary of the mutation analysis results
 my $SUMMARY_FILE = "summary.csv";
+# Name of file with runtime information
+my $RESULT_FILE = "results.csv";
+# Name of file with filtering details of each mutant
+my $FILTER_DETAILS_FILE = "filterDetails.csv";
+# Name of file with mutation coverage map
+my $COV_MAP = "covMap.csv";
+# Name of file with mutation kill map
+my $KILL_MAP = "killMap.csv";
+# Name of file with the mapping of test id to test name
+my $TEST_MAP = "testMap.csv";
 
 =pod
 
@@ -180,6 +190,31 @@ sub copy_mutation_logs {
     if (-e "$project->{prog_root}/$KILL_FILE") {
         system("cp $project->{prog_root}/$KILL_FILE $log_dir/$suite/$vid.$test_id.$KILL_FILE") == 0
             or die "Cannot copy $KILL_FILE!";
+    }
+    # The file with runtime information
+    if (-e "$project->{prog_root}/$RESULT_FILE") {
+        system("cp $project->{prog_root}/$RESULT_FILE $log_dir/$suite/$vid.$test_id.$RESULT_FILE") == 0
+            or die "Cannot copy $RESULT_FILE!";
+    }
+    # The file with filtering details of each mutant
+    if (-e "$project->{prog_root}/$FILTER_DETAILS_FILE") {
+        system("cp $project->{prog_root}/$FILTER_DETAILS_FILE $log_dir/$suite/$vid.$test_id.$FILTER_DETAILS_FILE") == 0
+            or die "Cannot copy $FILTER_DETAILS_FILE!";
+    }
+    # The file with the mutation coverage map
+    if (-e "$project->{prog_root}/$COV_MAP") {
+        system("cp $project->{prog_root}/$COV_MAP $log_dir/$suite/$vid.$test_id.$COV_MAP") == 0
+            or die "Cannot copy $COV_MAP!";
+    }
+    # The file with the mutation kill map
+    if (-e "$project->{prog_root}/$KILL_MAP") {
+        system("cp $project->{prog_root}/$KILL_MAP $log_dir/$suite/$vid.$test_id.$KILL_MAP") == 0
+            or die "Cannot copy $KILL_MAP!";
+    }
+    # The file with the mapping of test id to test name
+    if (-e "$project->{prog_root}/$TEST_MAP") {
+        system("cp $project->{prog_root}/$TEST_MAP $log_dir/$suite/$vid.$test_id.$TEST_MAP") == 0
+            or die "Cannot copy $TEST_MAP!";
     }
 }
 

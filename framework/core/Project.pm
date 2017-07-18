@@ -736,6 +736,13 @@ sub mutation_analysis {
     return $self->_ant_call("mutation.test",
                             "-Dmajor.exclude=$basedir/exclude.txt " .
                             "-Dmajor.kill.log=$basedir/kill.csv " .
+                            "-Dmajor.summaryFile=$basedir/summary.csv " .
+                            "-Dmajor.resultFile=$basedir/results.csv " .
+                            "-Dmajor.exportCovMap=true " .
+                            "-Dmajor.covMapFile=$basedir/covMap.csv " .
+                            "-Dmajor.exportKillMap=true " .
+                            "-Dmajor.killMapFile=$basedir/killMap.csv " .
+                            "-Dmajor.testMapFile=$basedir/testMap.csv " .
                             "$relevant $log $single_test_opt");
 }
 
@@ -768,6 +775,13 @@ sub mutation_analysis_ext {
                             "-Dd4j.test.dir=$dir -Dd4j.test.include=$include " .
                             "-Dmajor.exclude=$basedir/exclude.txt " .
                             "-Dmajor.kill.log=$basedir/kill.csv " .
+                            "-Dmajor.summaryFile=$basedir/summary.csv " .
+                            "-Dmajor.resultFile=$basedir/results.csv " .
+                            "-Dmajor.exportCovMap=true " .
+                            "-Dmajor.covMapFile=$basedir/covMap.csv " .
+                            "-Dmajor.exportKillMap=true " .
+                            "-Dmajor.killMapFile=$basedir/killMap.csv " .
+                            "-Dmajor.testMapFile=$basedir/testMap.csv " .
                             "$log $single_test_opt");
 }
 
