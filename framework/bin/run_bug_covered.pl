@@ -31,7 +31,7 @@ B<Temporary script that will be merged into the code coverage analysis>
 
 =head1 SYNOPSIS
 
-run_bug_covered.pl -p project_id -d suite_dir -o out_dir [-v version_id]
+run_bug_covered.pl -p project_id -d suite_dir -o out_dir [-v version_id] [-m modified_lines]
 
 =head1 OPTIONS
 
@@ -54,6 +54,12 @@ contain the cobertura coverage log files (xml).
 
 Only perform the coverage analysis for this version id (optional). Per default all
 suitable version ids are considered. 
+
+=item -m F<modified_lines>
+
+The lines modified by the bug patch. E.g.:
+ org/jfree/chart/renderer/category/AbstractCategoryItemRenderer.java,buggy,1797
+ org/jfree/chart/renderer/category/AbstractCategoryItemRenderer.java,fixed,1797
 
 =back
 
@@ -106,13 +112,16 @@ use Project;
 use DB;
 
 my %cmd_opts;
-getopts('p:d:o:v:', \%cmd_opts) or pod2usage(1);
+getopts('p:d:o:v:m:', \%cmd_opts) or pod2usage(1);
 pod2usage(1) unless defined $cmd_opts{p} and defined $cmd_opts{d} and defined $cmd_opts{o};
 
 my $PID = $cmd_opts{p};
 my $VID = $cmd_opts{v};
 my $SUITE_DIR = abs_path($cmd_opts{d});
 my $OUT_DIR = abs_path($cmd_opts{o});
+
+my $TARGET_DIFFS_DIR = "$SCRIPT_DIR/projects/$PID/patches";
+my $MODIFIED_LINES = $cmd_opts{m} if defined $cmd_opts{m};
 
 # Set up project
 my $project = Project::create_project($PID);
@@ -256,7 +265,11 @@ sub _parse_patch_diff {
     my ($bid) = @_;
     
     my %modified = ();
-    open(IN, "<$SCRIPT_DIR/projects/$PID/patches/$bid.src.diff") or die "Cannot read modified lines: $!";
+    if (defined $MODIFIED_LINES) {
+      open(IN, "<$MODIFIED_LINES") or die "Cannot read modified lines: $!";
+    } else {
+      open(IN, "<$TARGET_DIFFS_DIR/$bid.src.diff") or die "Cannot read modified lines: $!";
+    }
     while(<IN>) {
         chomp;
         /^([^,]+),(fixed|buggy),(\d+)$/ or die "Wrong format in patch diff: $_";
