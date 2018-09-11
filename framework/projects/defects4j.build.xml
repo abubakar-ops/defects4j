@@ -111,6 +111,10 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
 
             <sysproperty key="OUTFILE" value="${OUTFILE}"/>
             <formatter classname="edu.washington.cs.mut.testrunner.Formatter" usefile="false" />
+
+            <sysproperty key="TESTS_OUTFILE" value="tests_runtime.txt"/> <!-- TODO make this a property -->
+            <formatter classname="edu.washington.cs.mut.testrunner.JUnitListener" usefile="false" />
+
             <test name="${test.entry.class}" methods="${test.entry.method}" if="test.entry.class" />
             <batchtest unless="test.entry.class">
                 <fileset refid="all.manual.tests" />
@@ -296,6 +300,10 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
 
             <sysproperty key="OUTFILE" value="${OUTFILE}"/>
             <formatter classname="edu.washington.cs.mut.testrunner.Formatter" usefile="false" />
+
+            <sysproperty key="TESTS_OUTFILE" value="tests.txt"/> <!-- TODO make this a property -->
+            <formatter classname="edu.washington.cs.mut.testrunner.JUnitListener" usefile="false" />
+
             <test name="${test.entry.class}" methods="${test.entry.method}" if="test.entry.class" />
                 <batchtest unless="test.entry.class">
                     <fileset dir="${d4j.test.dir}">

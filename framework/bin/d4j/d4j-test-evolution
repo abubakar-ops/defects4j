@@ -1,0 +1,270 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2014-2018 René Just, Darioush Jalali, and Defects4J contributors.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#-------------------------------------------------------------------------------
+
+=pod
+
+=head1 NAME
+
+d4j-test-evolution -- evolve source code commit by commit and extract runtime
+information of a developer-written or automatically generated test suite.
+
+=head1 SYNOPSIS
+
+  d4j-test-evolution [-w work_dir] [-b] [-r | -s test_suite]
+
+=head1 DESCRIPTION
+
+Performs a test evolution analysis by running each provided test suite (i.e.,
+the developer-written test suite or an automatically generated test suite) on
+all past commits beginning with the program version for which the test suite was
+generated. The analysis stops as soon as D4J is not able to compile the project
+under test or the test suite.
+
+=head1 OPTIONS
+
+=over 4
+
+=item -w F<work_dir>
+
+The working directory of the checked-out project version (optional). Default is
+the current directory.
+
+=item -c
+
+Perform test evolution analysis on future commits (optional). By default test
+evolution analysis is performed on past commits.
+
+=item -r
+
+Only execute relevant developer-written tests (optional). By default all
+developer-written tests of the checked-out project version are executed.
+
+=item -s F<test_suite>
+
+The archive file name of an external test suite (optional). The default test
+suite is the developer-written test suite of the checked-out project version.
+See L<Test suites|/"Test suites">.
+
+=back
+
+=head1 Test Suites
+
+An external test suite has to be provided as an archive that contains the test
+sources. Format of the archive file name:
+
+F<C<project_id>-C<version_id>-C<test_suite_src>.C<test_id>.tar.bz2>
+
+Examples:
+
+=over 4
+
+=item * F<Lang-11f-randoop.1.tar.bz2>
+
+=item * F<Lang-12b-evosuite-weakmutation.1.tar.bz2>
+
+=item * F<Lang-12f-evosuite-branch.1.tar.bz2>
+
+=back
+
+=cut
+
+use warnings;
+use strict;
+
+use Constants;
+use Utils;
+use Project;
+use Getopt::Std;
+use Pod::Usage;
+
+#
+# Process arguments and issue usage message if necessary.
+#
+my %cmd_opts;
+getopts('w:c:rs:', \%cmd_opts) or pod2usage( { -verbose => 1, -input => __FILE__} );
+
+my $WORK_DIR            = Utils::get_abs_path($cmd_opts{w} // ".");
+my $FUTURE_COMMITS      = defined $cmd_opts{c} ? 1 : 0;
+my $REL_TESTS           = defined $cmd_opts{r} ? 1 : 0;
+my $TEST_SUITE_ARCHIVE  = $cmd_opts{s};
+if (defined $TEST_SUITE_ARCHIVE && $REL_TESTS == 1) {
+    pod2usage( { -verbose => 1, -input => __FILE__} );
+}
+
+my $config = Utils::read_config_file("$WORK_DIR/$CONFIG");
+unless(defined $config) {
+    print(STDERR "$WORK_DIR is not a valid working directory!\n");
+    exit 1;
+}
+my $pid = $config->{$CONFIG_PID};
+my $vid = $config->{$CONFIG_VID};
+my $bid = Utils::check_vid($vid)->{bid};
+
+# Instantiate project and set working directory
+my $project = Project::create_project($pid);
+$project->{prog_root} = $WORK_DIR;
+
+
+my $current_rev = $project->lookup($vid);
+my $src_dir     = $project->src_dir($vid);
+my $test_dir    = $project->test_dir($vid);
+
+# Logging and data directory
+my $REVISIONS_DIR = "$WORK_DIR/.revisions";
+system("mkdir -p $REVISIONS_DIR") == 0 or die "Cannot create '$REVISIONS_DIR' directory";
+
+# Analyze generated test suites
+if (defined $TEST_SUITE_ARCHIVE) {
+    $TEST_SUITE_ARCHIVE =~ /^$pid-(\d+[bf])-([^\.]+)(\.(\d+))?.tar.bz2$/;
+    my $archive_vid = $1;
+    my $archive_test_id = $4 // 1;
+    if ($vid eq $archive_vid) {
+        die "VID '$vid' must match the VID in the archive ('$archive_vid')";
+    }
+
+    # Extract external test suite
+    my $generated_test_dir = "$WORK_DIR/.test_suite";
+    Utils::extract_test_suite($TEST_SUITE_ARCHIVE, $generated_test_dir) or die;
+    _run_test_evolution_analysis($archive_test_id, $generated_test_dir);
+} else {
+    _run_test_evolution_analysis(1);
+}
+
+#
+# Run test evolution analysis for developer-written or automatically generated
+# test suites.
+#
+sub _run_test_evolution_analysis {
+    my ($test_suite_id, $generated_test_dir) = @_;
+
+    my $log = "";
+    my $cmd;
+    # TODO: Implement as subroutine in VCS modules
+    if ($pid eq "Chart") {
+        # 1. Jump to checkout directory
+        # 2. Checkout the official buggy/fixed commit (but keeping D4J files)
+        $cmd = "cd $WORK_DIR && git checkout \$(git log --reverse --pretty=oneline | grep \"D4J_\"$pid\"_\"$bid\"_POST_FIX_\" | tail -n1 | cut -f1 -d' ') $src_dir $test_dir > /dev/null 2>&1 && svn up --accept theirs-full -r$current_rev > /dev/null 2>&1";
+        if ($FUTURE_COMMITS == 1) {
+            # 3. Get all future commits
+            $cmd .= " && a=\$(svn log -rHEAD:$current_rev $src_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
+            $cmd .= " && b=\$(svn log -rHEAD:$current_rev $test_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
+        } else {
+            # 3. Get all past commits
+            $cmd .= " && a=\$(svn log -r$current_rev:1 $src_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
+            $cmd .= " && b=\$(svn log -r$current_rev:1 $test_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
+        }
+        $cmd .= " && echo \"\$a\\n\$b\" | sort -u -h -r";
+    } else {
+        # 1. Jump to checkout directory
+        # 2. Checkout the official buggy/fixed commit (but keeping D4J files)
+        $cmd = "cd $WORK_DIR && git checkout $current_rev $src_dir $test_dir";
+        if ($FUTURE_COMMITS == 1) {
+            # 3. Get all future commits
+            $cmd .= " && git rev-list origin ^HEAD -- $src_dir -- $test_dir";
+        } else {
+            # 3. Get all past commits
+            $cmd .= " && git rev-list \$(git rev-list HEAD -- $src_dir -- $test_dir | tail -n1) $current_rev -- $src_dir -- $test_dir";
+       }
+    }
+    if ($FUTURE_COMMITS == 1) {
+        Utils::exec_cmd("$cmd", "Obtain future commits", \$log) or die;
+    } else {
+        Utils::exec_cmd("$cmd", "Obtain past commits", \$log) or die;
+    }
+    my @commits = split(/\n/, $log);
+    my $num_commits = scalar(@commits);
+
+    my $runtime_data_file = "$WORK_DIR/tests_runtime.txt";
+
+    open(CSV, ">$WORK_DIR/test_evolution.csv") or die "Cannot write output csv file $!";
+    print(CSV "project_id,version_id,revision_id,test_name,test_runtime,test_outcome,test_stack_strace\n");
+
+    my $commit_index = 0;
+    foreach my $commit (@commits) {
+        if ($commit eq $current_rev) {
+            next;
+        }
+        if ($FUTURE_COMMITS == 1) {
+            ++$commit_index;
+        } else {
+            --$commit_index;
+        }
+
+        # TODO: Implement a proper clean target in Chart.build.xml
+        if ($pid eq "Chart") {
+            system("rm -rf $WORK_DIR/build") == 0 or die "Fail to remove create '$WORK_DIR/build' directory";
+        } else {
+            $project->_ant_call("clean") == 0 or die "Fail to clean build directory";
+        }
+
+        my $tmp_diff = "$REVISIONS_DIR/$commit_index.diff";
+        system(">$tmp_diff") == 0 or die "Fail to reset '$tmp_diff' file";
+        $project->export_diff($current_rev, $commit, $tmp_diff)
+            or die "Cannot export diff";
+        if (!-z $tmp_diff) {
+            unless ($project->apply_patch($WORK_DIR, $tmp_diff)) {
+                last;
+            }
+        }
+
+        my $src_comp_log = "$REVISIONS_DIR/$commit_index.test_evolution_analysis.src.comp.log";
+        system(">$src_comp_log") == 0 or die "Fail to reset '$src_comp_log' file";
+        unless ($project->compile($src_comp_log)) {
+            next;
+        }
+
+        my $test_comp_log = "$REVISIONS_DIR/$commit_index.test_evolution_analysis.test.comp.log";
+        system(">$test_comp_log") == 0 or die "Fail to reset '$test_comp_log' file";
+        if (defined $TEST_SUITE_ARCHIVE) {
+            unless ($project->compile_ext_tests($generated_test_dir, $test_comp_log)) {
+                next;
+            }
+        } else {
+            unless ($project->compile_tests($test_comp_log)) {
+                next;
+            }
+        }
+
+        my $test_log = "$REVISIONS_DIR/$commit_index.test_evolution_analysis.test.run.log";
+        system(">$test_log") == 0 or die "Fail to reset '$test_log' file";
+        system(">$runtime_data_file") == 0 or die "Fail to reset '$runtime_data_file' file";
+        if (defined $TEST_SUITE_ARCHIVE) {
+            $project->run_ext_tests($generated_test_dir, "*.java", $test_log) or die "Cannot run generated tests";
+        } elsif ($REL_TESTS == 1) {
+            $project->run_relevant_tests($test_log) or die "Cannot run all relevant developer-written tests";
+        } else {
+            $project->run_tests($test_log) or die "Cannot run all developer-written tests";
+        }
+
+        open(DATA, $runtime_data_file);
+        while (<DATA>) {
+            print(CSV "$pid,$vid,$commit_index,$_");
+        }
+        close(DATA);
+
+        $current_rev = $commit;
+    }
+
+    close(CSV);
+}
+
+1;
