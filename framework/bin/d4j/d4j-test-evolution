@@ -176,7 +176,7 @@ sub _run_test_evolution_analysis {
     } else {
         # 1. Jump to checkout directory
         # 2. Checkout the official buggy/fixed commit (but keeping D4J files)
-        $cmd = "cd $WORK_DIR && git checkout $current_rev $src_dir $test_dir";
+        $cmd = "cd $WORK_DIR && dc=\$(cat .defects4j.config) && db=\$(cat defects4j.build.properties) && git checkout -q $current_rev && echo \"\$dc\" > .defects4j.config && echo \"\$db\" > defects4j.build.properties";
         if ($FUTURE_COMMITS == 1) {
             # 3. Get all future commits
             $cmd .= " && git rev-list origin ^HEAD -- $src_dir -- $test_dir";
