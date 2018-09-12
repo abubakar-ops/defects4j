@@ -33,11 +33,11 @@ information of a developer-written or automatically generated test suite.
 
 =head1 DESCRIPTION
 
-Performs a test evolution analysis by running each provided test suite (i.e.,
-the developer-written test suite or an automatically generated test suite) on
-all past commits beginning with the program version for which the test suite was
-generated. The analysis stops as soon as D4J is not able to compile the project
-under test or the test suite.
+Performs a test evolution analysis by running a provided test suite (i.e., the
+developer-written test suite or an automatically generated test suite) on all
+past or future commits beginning with the program version/commit for which the
+test suite was generated. The analysis stops as soon as D4J is not able to go
+any further in the repository history.
 
 =head1 OPTIONS
 
