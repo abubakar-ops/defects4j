@@ -213,7 +213,7 @@ sub _run_test_evolution_analysis {
         if ($pid eq "Chart") {
             system("rm -rf $WORK_DIR/build") == 0 or die "Fail to remove create '$WORK_DIR/build' directory";
         } else {
-            $project->_ant_call("clean") == 0 or die "Fail to clean build directory";
+            $project->_ant_call("clean") || die "Fail to clean build directory";
         }
 
         my $tmp_diff = "$REVISIONS_DIR/$commit_index.diff";
