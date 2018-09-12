@@ -162,7 +162,7 @@ sub _run_test_evolution_analysis {
     if ($pid eq "Chart") {
         # 1. Jump to checkout directory
         # 2. Checkout the official buggy/fixed commit (but keeping D4J files)
-        $cmd = "cd $WORK_DIR && git checkout \$(git log --reverse --pretty=oneline | grep \"D4J_\"$pid\"_\"$bid\"_POST_FIX_\" | tail -n1 | cut -f1 -d' ') $src_dir $test_dir > /dev/null 2>&1 && svn up --accept theirs-full -r$current_rev > /dev/null 2>&1";
+        $cmd = "cd $WORK_DIR && git checkout -q \$(git log --reverse --pretty=oneline | grep \"D4J_\"$pid\"_\"$bid\"_POST_FIX_\" | tail -n1 | cut -f1 -d' ') $src_dir $test_dir && svn up -q --accept theirs-full -r$current_rev";
         if ($FUTURE_COMMITS == 1) {
             # 3. Get all future commits
             $cmd .= " && a=\$(svn log -rHEAD:$current_rev $src_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
