@@ -175,14 +175,14 @@ sub _run_test_evolution_analysis {
         $cmd .= " && echo \"\$a\\n\$b\" | sort -u -h -r";
     } else {
         # 1. Jump to checkout directory
-        # 2. Checkout the official buggy/fixed commit (but keeping D4J files)
-        $cmd = "cd $WORK_DIR && dc=\$(cat .defects4j.config) && db=\$(cat defects4j.build.properties) && git checkout -q $current_rev && echo \"\$dc\" > .defects4j.config && echo \"\$db\" > defects4j.build.properties";
+        # 2. Get the current commit hash
+        $cmd = "cd $WORK_DIR && git rev-parse HEAD";
         if ($FUTURE_COMMITS == 1) {
             # 3. Get all future commits
             $cmd .= " && git rev-list origin ^HEAD -- $src_dir -- $test_dir";
         } else {
-            # 3. Get all past commits
-            $cmd .= " && git rev-list \$(git rev-list HEAD -- $src_dir -- $test_dir | tail -n1) $current_rev -- $src_dir -- $test_dir";
+            # 3. Get all past commits except the official buggy/fixed one
+            $cmd .= " && git rev-list \$(git rev-list HEAD -- $src_dir -- $test_dir | tail -n1) $current_rev^ -- $src_dir -- $test_dir";
        }
     }
     if ($FUTURE_COMMITS == 1) {
@@ -192,6 +192,7 @@ sub _run_test_evolution_analysis {
     }
     my @commits = split(/\n/, $log);
     my $num_commits = scalar(@commits);
+    $current_rev = shift @commits; # get very first commit of the list
 
     my $runtime_data_file = "$WORK_DIR/tests_runtime.txt";
 
@@ -200,14 +201,6 @@ sub _run_test_evolution_analysis {
 
     my $commit_index = 0;
     foreach my $commit (@commits) {
-        if ($commit eq $current_rev) {
-            next;
-        }
-        if ($FUTURE_COMMITS == 1) {
-            ++$commit_index;
-        } else {
-            --$commit_index;
-        }
 
         # TODO: Implement a proper clean target in Chart.build.xml
         if ($pid eq "Chart") {
@@ -216,19 +209,10 @@ sub _run_test_evolution_analysis {
             $project->_ant_call("clean") || die "Fail to clean build directory";
         }
 
-        my $tmp_diff = "$REVISIONS_DIR/$commit_index.diff";
-        system(">$tmp_diff") == 0 or die "Fail to reset '$tmp_diff' file";
-        $project->export_diff($current_rev, $commit, $tmp_diff)
-            or die "Cannot export diff";
-        if (!-z $tmp_diff) {
-            unless ($project->apply_patch($WORK_DIR, $tmp_diff)) {
-                last;
-            }
-        }
-
         my $src_comp_log = "$REVISIONS_DIR/$commit_index.test_evolution_analysis.src.comp.log";
         system(">$src_comp_log") == 0 or die "Fail to reset '$src_comp_log' file";
         unless ($project->compile($src_comp_log)) {
+            $commit_index = _update_commit_index($commit_index);
             next;
         }
 
@@ -236,10 +220,12 @@ sub _run_test_evolution_analysis {
         system(">$test_comp_log") == 0 or die "Fail to reset '$test_comp_log' file";
         if (defined $TEST_SUITE_ARCHIVE) {
             unless ($project->compile_ext_tests($generated_test_dir, $test_comp_log)) {
+                $commit_index = _update_commit_index($commit_index);
                 next;
             }
         } else {
             unless ($project->compile_tests($test_comp_log)) {
+                $commit_index = _update_commit_index($commit_index);
                 next;
             }
         }
@@ -261,10 +247,41 @@ sub _run_test_evolution_analysis {
         }
         close(DATA);
 
+        # either increment or decrement the commit index
+        $commit_index = _update_commit_index($commit_index);
+
+        my $tmp_diff = "$REVISIONS_DIR/$commit_index.diff";
+        system(">$tmp_diff") == 0 or die "Fail to reset '$tmp_diff' file";
+        # In here we use a custom made command, as the official one, i.e.,
+        #   $project->export_diff($current_rev, $commit, $tmp_diff) or die "Cannot export diff";
+        # used the official repository released with D4J rather than the current working directory
+        if ($pid eq "Chart") {
+            # TODO
+        } else {
+            system("cd $WORK_DIR && git diff --no-ext-diff --binary $current_rev $commit -- $src_dir -- $test_dir > $tmp_diff") == 0 or die "Cannot export diff";
+        }
+        if (!-z $tmp_diff) {
+            unless ($project->apply_patch($WORK_DIR, $tmp_diff)) {
+                last;
+            }
+        }
+
         $current_rev = $commit;
     }
 
     close(CSV);
+}
+
+#
+# Update the index of the current commit.
+#
+sub _update_commit_index {
+    my ($index) = @_;
+    if ($FUTURE_COMMITS == 1) {
+        return ++$index;
+    } else {
+        return --$index;
+    }
 }
 
 1;
