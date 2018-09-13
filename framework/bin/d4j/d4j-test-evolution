@@ -37,7 +37,8 @@ Performs a test evolution analysis by running a provided test suite (i.e., the
 developer-written test suite or an automatically generated test suite) on all
 past or future commits beginning with the program version/commit for which the
 test suite was generated. The analysis stops as soon as D4J is not able to go
-any further in the repository history.
+any further in the repository history or if the project under test / test suite
+does not compile.
 
 =head1 OPTIONS
 
@@ -216,7 +217,7 @@ sub _run_test_evolution_analysis {
         system(">$src_comp_log") == 0 or die "Fail to reset '$src_comp_log' file";
         unless ($project->compile($src_comp_log)) {
             $commit_index = _update_commit_index($commit_index);
-            next;
+            last;
         }
 
         my $test_comp_log = "$REVISIONS_DIR/$commit_index.test_evolution_analysis.test.comp.log";
@@ -224,12 +225,12 @@ sub _run_test_evolution_analysis {
         if (defined $TEST_SUITE_ARCHIVE) {
             unless ($project->compile_ext_tests($generated_test_dir, $test_comp_log)) {
                 $commit_index = _update_commit_index($commit_index);
-                next;
+                last;
             }
         } else {
             unless ($project->compile_tests($test_comp_log)) {
                 $commit_index = _update_commit_index($commit_index);
-                next;
+                last;
             }
         }
 
