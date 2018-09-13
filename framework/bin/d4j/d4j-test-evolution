@@ -161,16 +161,17 @@ sub _run_test_evolution_analysis {
     # TODO: Implement as subroutine in VCS modules
     if ($pid eq "Chart") {
         # 1. Jump to checkout directory
-        # 2. Checkout the official buggy/fixed commit (but keeping D4J files)
-        $cmd = "cd $WORK_DIR && git checkout -q \$(git log --reverse --pretty=oneline | grep \"D4J_\"$pid\"_\"$bid\"_POST_FIX_\" | tail -n1 | cut -f1 -d' ') $src_dir $test_dir && svn up -q --accept theirs-full -r$current_rev";
+        $cmd = "cd $WORK_DIR";
         if ($FUTURE_COMMITS == 1) {
-            # 3. Get all future commits
-            $cmd .= " && a=\$(svn log -rHEAD:$current_rev $src_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
-            $cmd .= " && b=\$(svn log -rHEAD:$current_rev $test_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
+            # 2. Get all future commits
+            my $next_rev = $current_rev + 1;
+            $cmd .= " && a=\$(svn log -rHEAD:$next_rev $src_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
+            $cmd .= " && b=\$(svn log -rHEAD:$next_rev $test_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
         } else {
-            # 3. Get all past commits
-            $cmd .= " && a=\$(svn log -r$current_rev:1 $src_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
-            $cmd .= " && b=\$(svn log -r$current_rev:1 $test_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
+            # 2. Get all past commits except the official buggy/fixed one
+            my $previous_rev = $current_rev - 1;
+            $cmd .= " && a=\$(svn log -r$previous_rev:1 $src_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
+            $cmd .= " && b=\$(svn log -r$previous_rev:1 $test_dir | grep '^r\\d*' | cut -f1 -d' ' | tr -d 'r')";
         }
         $cmd .= " && echo \"\$a\\n\$b\" | sort -u -h -r";
     } else {
@@ -192,7 +193,9 @@ sub _run_test_evolution_analysis {
     }
     my @commits = split(/\n/, $log);
     my $num_commits = scalar(@commits);
-    $current_rev = shift @commits; # get very first commit of the list
+    if ($pid ne "Chart") {
+        $current_rev = shift @commits; # get very first commit of the list
+    }
 
     my $runtime_data_file = "$WORK_DIR/tests_runtime.txt";
 
@@ -256,7 +259,12 @@ sub _run_test_evolution_analysis {
         #   $project->export_diff($current_rev, $commit, $tmp_diff) or die "Cannot export diff";
         # used the official repository released with D4J rather than the current working directory
         if ($pid eq "Chart") {
-            # TODO
+            if ($commit_index == -1 or $commit_index == 1) {
+                $cmd = "cd $WORK_DIR && git checkout -q \$(git log --reverse --pretty=oneline | grep \"D4J_\"$pid\"_\"$bid\"_POST_FIX_\" | tail -n1 | cut -f1 -d' ') $src_dir $test_dir && svn update --accept theirs-full -r$current_rev";
+                $log = "";
+                Utils::exec_cmd("$cmd", "Revert SVN repository to revision $current_rev", \$log) or die;
+            }
+            system("cd $WORK_DIR && svn diff -r$current_rev:$commit > $tmp_diff") == 0 or die "Cannot export diff";
         } else {
             system("cd $WORK_DIR && git diff --no-ext-diff --binary $current_rev $commit -- $src_dir -- $test_dir > $tmp_diff") == 0 or die "Cannot export diff";
         }
