@@ -201,7 +201,7 @@ sub _run_test_evolution_analysis {
     my $runtime_data_file = "$WORK_DIR/tests_runtime.txt";
 
     open(CSV, ">$WORK_DIR/test_evolution.csv") or die "Cannot write output csv file $!";
-    print(CSV "project_id,version_id,revision_id,test_name,test_runtime,test_outcome,test_stack_strace\n");
+    print(CSV "project_id,version_id,num_revisions,revision_id,test_name,test_runtime,test_outcome,test_stack_strace\n");
 
     my $commit_index = 0;
     my $number_of_consecutive_failing_commits = 0;
@@ -265,7 +265,7 @@ sub _run_test_evolution_analysis {
 
         open(DATA, $runtime_data_file);
         while (<DATA>) {
-            print(CSV "$pid,$vid,$commit_index,$_");
+            print(CSV "$pid,$vid,$num_commits,$commit_index,$_");
         }
         close(DATA);
 
