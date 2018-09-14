@@ -204,7 +204,22 @@ sub _run_test_evolution_analysis {
     print(CSV "project_id,version_id,revision_id,test_name,test_runtime,test_outcome,test_stack_strace\n");
 
     my $commit_index = 0;
+    my $number_of_consecutive_failing_commits = 0;
     foreach my $commit (@commits) {
+        if ($number_of_consecutive_failing_commits == 5) {
+            # There is a chance that some past/future commits do not compile due
+            # to external libraries to which D4J is not aware of, or just potential
+            # minor mistakes that have been committed. Instead of stopping the
+            # analysis right way when the compilation of the source code fails,
+            # in here the compilation is allowed to fail in X consecutive commits.
+            # The motivation behind this decision is that a compilation might
+            # just fail due to a mistake that has been committed. In such cases,
+            # it is likely that the source code of the following commits (either
+            # past/future) will compile without any issue. Once the maximum allowed
+            # number of consecutive failing commits is reached, the test evolution
+            # analysis is stopped.
+            last;
+        }
 
         # TODO: Implement a proper clean target in Chart.build.xml
         if ($pid eq "Chart") {
@@ -216,21 +231,24 @@ sub _run_test_evolution_analysis {
         my $src_comp_log = "$REVISIONS_DIR/$commit_index.test_evolution_analysis.src.comp.log";
         system(">$src_comp_log") == 0 or die "Fail to reset '$src_comp_log' file";
         unless ($project->compile($src_comp_log)) {
+            ++$number_of_consecutive_failing_commits;
             $commit_index = _update_commit_index($commit_index);
-            last;
+            next;
         }
 
         my $test_comp_log = "$REVISIONS_DIR/$commit_index.test_evolution_analysis.test.comp.log";
         system(">$test_comp_log") == 0 or die "Fail to reset '$test_comp_log' file";
         if (defined $TEST_SUITE_ARCHIVE) {
             unless ($project->compile_ext_tests($generated_test_dir, $test_comp_log)) {
+                ++$number_of_consecutive_failing_commits;
                 $commit_index = _update_commit_index($commit_index);
-                last;
+                next;
             }
         } else {
             unless ($project->compile_tests($test_comp_log)) {
+                ++$number_of_consecutive_failing_commits;
                 $commit_index = _update_commit_index($commit_index);
-                last;
+                next;
             }
         }
 
@@ -276,6 +294,7 @@ sub _run_test_evolution_analysis {
         }
 
         $current_rev = $commit;
+        $number_of_consecutive_failing_commits = 0; # reset counter
     }
 
     close(CSV);
