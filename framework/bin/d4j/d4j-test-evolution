@@ -233,6 +233,11 @@ sub _run_test_evolution_analysis {
         unless ($project->compile($src_comp_log)) {
             ++$number_of_consecutive_failing_commits;
             $commit_index = _update_commit_index($commit_index);
+
+            # go to the next revision
+            _get_and_apply_diff($commit, $commit_index, $current_rev) == 0 or last;
+            $current_rev = $commit;
+
             next;
         }
 
@@ -242,12 +247,22 @@ sub _run_test_evolution_analysis {
             unless ($project->compile_ext_tests($generated_test_dir, $test_comp_log)) {
                 ++$number_of_consecutive_failing_commits;
                 $commit_index = _update_commit_index($commit_index);
+
+                # go to the next revision
+                _get_and_apply_diff($commit, $commit_index, $current_rev) == 0 or last;
+                $current_rev = $commit;
+
                 next;
             }
         } else {
             unless ($project->compile_tests($test_comp_log)) {
                 ++$number_of_consecutive_failing_commits;
                 $commit_index = _update_commit_index($commit_index);
+
+                # go to the next revision
+                _get_and_apply_diff($commit, $commit_index, $current_rev) == 0 or last;
+                $current_rev = $commit;
+
                 next;
             }
         }
@@ -271,27 +286,8 @@ sub _run_test_evolution_analysis {
 
         # either increment or decrement the commit index
         $commit_index = _update_commit_index($commit_index);
-
-        my $tmp_diff = "$REVISIONS_DIR/$commit_index.diff";
-        system(">$tmp_diff") == 0 or die "Fail to reset '$tmp_diff' file";
-        # In here we use a custom made command, as the official one, i.e.,
-        #   $project->export_diff($current_rev, $commit, $tmp_diff) or die "Cannot export diff";
-        # used the official repository released with D4J rather than the current working directory
-        if ($pid eq "Chart") {
-            if ($commit_index == -1 or $commit_index == 1) {
-                $cmd = "cd $WORK_DIR && git checkout -q \$(git log --reverse --pretty=oneline | grep \"D4J_\"$pid\"_\"$bid\"_POST_FIX_\" | tail -n1 | cut -f1 -d' ') $src_dir $test_dir && svn update --accept theirs-full -r$current_rev";
-                $log = "";
-                Utils::exec_cmd("$cmd", "Revert SVN repository to revision $current_rev", \$log) or die;
-            }
-            system("cd $WORK_DIR && svn diff -r$current_rev:$commit > $tmp_diff") == 0 or die "Cannot export diff";
-        } else {
-            system("cd $WORK_DIR && git diff --no-ext-diff --binary $current_rev $commit -- $src_dir -- $test_dir > $tmp_diff") == 0 or die "Cannot export diff";
-        }
-        if (!-z $tmp_diff) {
-            unless ($project->apply_patch($WORK_DIR, $tmp_diff)) {
-                last;
-            }
-        }
+        # extract next diff and apply it
+        _get_and_apply_diff($commit, $commit_index, $current_rev) == 0 or last;
 
         $current_rev = $commit;
         $number_of_consecutive_failing_commits = 0; # reset counter
@@ -310,6 +306,36 @@ sub _update_commit_index {
     } else {
         return --$index;
     }
+}
+
+#
+# Extract the diff between two revisions and apply it.
+#
+sub _get_and_apply_diff {
+    my ($commit, $commit_index, $current_rev) = @_;
+
+    my $tmp_diff = "$REVISIONS_DIR/$commit_index.diff";
+    system(">$tmp_diff") == 0 or die "Fail to reset '$tmp_diff' file";
+    # In here we use a custom made command, as the official one, i.e.,
+    #   $project->export_diff($current_rev, $commit, $tmp_diff) or die "Cannot export diff";
+    # used the official repository released with D4J rather than the current working directory
+    if ($pid eq "Chart") {
+        if ($commit_index == -1 or $commit_index == 1) {
+            my $cmd = "cd $WORK_DIR && git checkout -q \$(git log --reverse --pretty=oneline | grep \"D4J_\"$pid\"_\"$bid\"_POST_FIX_\" | tail -n1 | cut -f1 -d' ') $src_dir $test_dir && svn update --accept theirs-full -r$current_rev";
+            my $log = "";
+            Utils::exec_cmd("$cmd", "Revert SVN repository to revision $current_rev", \$log) or die;
+        }
+        system("cd $WORK_DIR && svn diff -r$current_rev:$commit > $tmp_diff") == 0 or die "Cannot export diff";
+    } else {
+        system("cd $WORK_DIR && git diff --no-ext-diff --binary $current_rev $commit -- $src_dir -- $test_dir > $tmp_diff") == 0 or die "Cannot export diff";
+    }
+    if (!-z $tmp_diff) {
+        unless ($project->apply_patch($WORK_DIR, $tmp_diff)) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 1;
