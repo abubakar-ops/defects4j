@@ -108,12 +108,12 @@ foreach my $id (@ids) {
     $project->compile() or die "Could not compile";
     $project->compile_tests() or die "Could not compile tests";
 
-    # Hash all modified classes
-    my %mod_classes = ();
-    open(IN, "<${project_dir}/modified_classes/${id}.src") or die "Cannot read modified classes";
+    # Hash all loaded classes
+    my %load_classes = ();
+    open(IN, "<${project_dir}/loaded_classes/${id}.src") or die "Cannot read modified classes";
     while(<IN>) {
         chomp;
-        $mod_classes{$_} = 1;
+        $load_classes{$_} = 1;
     }
     close(IN);
 
@@ -135,9 +135,9 @@ foreach my $id (@ids) {
             last;
         }
         foreach my $class (@{$loaded->{src}}) {
-            if (defined $mod_classes{$class}) {
+            if (defined $load_classes{$class}) {
                 push(@relevant, $test);
-                # A test is relevant if it loads at least one of the modified
+                # A test is relevant if it loads at least one of the loaded
                 # classes!
                 last;
             }
