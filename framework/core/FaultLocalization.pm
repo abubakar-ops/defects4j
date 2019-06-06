@@ -267,7 +267,9 @@ sub _score_ranking {
         chomp;
         # e.g., org/jfree/chart/plot/CategoryPlot.java#1363,0.20851441405707477
         /([^#]+#\d+)(\![^,]+)?,(.+)/ or die "Unexpected line in ranking file: $_";
-        $ranks{$1}={susp => $3};
+        if(!$ranks{$1} || $ranks{$1}->{susp} <= $3){
+            $ranks{$1}={susp => $3};
+        }
     }
     close(IN);
     my $lines_ranking = scalar(keys(%ranks));
