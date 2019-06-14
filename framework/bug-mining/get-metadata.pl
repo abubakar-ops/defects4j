@@ -240,6 +240,12 @@ system("rm -rf $TMP_DIR");
 #
 sub _get_bug_ids {
     my $target_bid = shift;
+    my @ids = ();
+
+    if (! -e "$TAB_TRIGGER" && defined($target_bid)) {
+        push(@ids, $target_bid);
+        return @ids;
+    }
 
     my $min_id;
     my $max_id;
@@ -256,7 +262,6 @@ sub _get_bug_ids {
                                 "WHERE $FAIL_ISO_V1>0 AND $PROJECT=?")
                             or die $dbh->errstr;
     $sth->execute($PID) or die "Cannot query database: $dbh->errstr";
-    my @ids = ();
     foreach (@{$sth->fetchall_arrayref}) {
         my $bid = $_->[0];
 
