@@ -125,11 +125,17 @@ sub _init_version {
         my $cmd = " cd $work_dir" .
                   " && java -jar $LIB_DIR/analyzer.jar $work_dir $ANALYZER_OUTPUT/$bid build.xml 2>&1";
         Utils::exec_cmd($cmd, "Run build-file analyzer on build.xml.");
+        if (-e "$work_dir/pom.xml") {
+            my $download_dep = "cd $work_dir && mvn dependency:copy-dependencies -DoutputDirectory=\"$PROJECT_DIR/lib\"";
+            Utils::exec_cmd($download_dep, "Download dependencies from maven build.xml");
+        }
     } elsif (-e "$work_dir/pom.xml") {
         # Run maven-ant plugin and overwrite the original build.xml whenever a maven build file exists
         my $cmd = " cd $work_dir" .
                   " && mvn ant:ant -Doverwrite=true 2>&1" .
-                  " && patch build.xml $PROJECT_DIR/build.xml.patch 2>&1" .
+                  " && patch build.xml $SCRIPT_DIR/projects/build.xml.patch 2>&1" .
+                  " && name=\$(grep '^<project name=' build.xml | sed -n 's/^<project name=\"\\(.*\\)\" default.*\$/\\1/p')" .
+                  " && sed -i \"s/<PROJECT_NAME>/\$name/g\" build.xml" .
                   " && rm -rf $GEN_BUILDFILE_DIR/$rev_id && mkdir -p $GEN_BUILDFILE_DIR/$rev_id 2>&1" .
                   " && cp maven-build.* $GEN_BUILDFILE_DIR/$rev_id 2>&1" .
                   " && cp build.xml $GEN_BUILDFILE_DIR/$rev_id 2>&1";
@@ -204,7 +210,7 @@ foreach my $bid (@ids) {
     $project->sanity_check();
 }
 
-print("\n--- Add the following to the <fileset> tag identified by the id 'all.manual.tests' in the <PROJECT_ID.build.xml> file ---\n");
+print("\n--- Add the following to the <fileset> tag identified by the id 'all.manual.tests' in the <$PID.build.xml> file ---\n");
 system("cat $ANALYZER_OUTPUT/*/includes | sort -u | while read -r include; do echo \"<include name='\"\$include\"' />\"; done");
 system("cat $ANALYZER_OUTPUT/*/excludes | sort -u | while read -r exclude; do echo \"<exclude name='\"\$exclude\"' />\"; done");
 

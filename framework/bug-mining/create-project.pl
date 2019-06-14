@@ -92,11 +92,9 @@ my $URL = $cmd_opts{r};
 
 my $module_template = "$CORE_DIR/Project/template";
 my $build_template  = "$SCRIPT_DIR/projects/template.build.xml";
-my $build_patch  = "$SCRIPT_DIR/projects/build.xml.patch";
 
 my $module_file = "$WORK_DIR/framework/core/Project/$PID.pm";
 my $build_file  = "$WORK_DIR/framework/projects/$PID/$PID.build.xml";
-my $build_patch_file  = "$WORK_DIR/framework/projects/$PID/build.xml.patch";
 
 # Directory to which the remote repository is cloned.
 my $repo_dir    = "$WORK_DIR/project_repos";
@@ -136,16 +134,6 @@ open(IN, "<$build_template") or die "Cannot open template file: $!";
 open(OUT, ">$build_file") or die "Cannot open build file: $!";
 while(<IN>) {
     s/<PID>/$PID/g;
-    s/<PROJECT_NAME>/$NAME/g;
-    print(OUT $_);
-}
-close(IN);
-close(OUT);
-
-# Copy patch build file and set project id
-open(IN, "<$build_patch") or die "Cannot open build patch file: $!";
-open(OUT, ">$build_patch_file") or die "Cannot open build patch file: $!";
-while(<IN>) {
     s/<PROJECT_NAME>/$NAME/g;
     print(OUT $_);
 }
