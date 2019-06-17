@@ -224,7 +224,7 @@ foreach my $bid (@bids) {
     # This util script uses the possibly minimized source patch file instead of
     # the Vcs-diff between the pre-fix and post-fix revision.
     Utils::exec_cmd("$UTIL_DIR/get_modified_classes.pl -p $PID -b $bid > $MODIFIED/$bid.src",
-            "Exporting the set of modified classes");
+            "Exporting the set of modified classes") or die;
 
     # Determine and export all relevant test classes
     _export_relevant_tests($bid);
