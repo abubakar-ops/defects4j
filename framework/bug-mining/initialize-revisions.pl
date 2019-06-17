@@ -126,20 +126,31 @@ sub _init_version {
                   " && java -jar $LIB_DIR/analyzer.jar $work_dir $ANALYZER_OUTPUT/$bid build.xml 2>&1";
         Utils::exec_cmd($cmd, "Run build-file analyzer on build.xml.");
         if (-e "$work_dir/pom.xml") {
-            my $download_dep = "cd $work_dir && mvn dependency:copy-dependencies -DoutputDirectory=\"$PROJECT_DIR/lib\"";
-            Utils::exec_cmd($download_dep, "Download dependencies from maven build.xml");
+            # Attempt to collect any dependence
+            my $download_deps_cmd = "cd $work_dir && mvn dependency:copy-dependencies -DoutputDirectory=\"$PROJECT_DIR/lib\" > /dev/null 2>&1";
+            Utils::exec_cmd($download_deps_cmd, "Attempt to download dependencies from maven build.xml");
         }
     } elsif (-e "$work_dir/pom.xml") {
         # Run maven-ant plugin and overwrite the original build.xml whenever a maven build file exists
         my $cmd = " cd $work_dir" .
-                  " && mvn ant:ant -Doverwrite=true 2>&1" .
-                  " && patch build.xml $SCRIPT_DIR/projects/build.xml.patch 2>&1" .
+                     " && mvn ant:ant -Doverwrite=true";
+        Utils::exec_cmd($cmd, "Convert Maven to Ant build file. Revision id: ") or die;
+
+        $cmd = " cd $work_dir" .
+                  " && patch build.xml $SCRIPT_DIR/projects/build.xml.patch";
+        Utils::exec_cmd($cmd, "Patch Ant build file.") or die;
+
+        $cmd = " cd $work_dir" .
                   " && name=\$(grep '^<project name=' build.xml | sed -n 's/^<project name=\"\\(.*\\)\" default.*\$/\\1/p')" .
-                  " && sed -i \"s/<PROJECT_NAME>/\$name/g\" build.xml" .
-                  " && rm -rf $GEN_BUILDFILE_DIR/$rev_id && mkdir -p $GEN_BUILDFILE_DIR/$rev_id 2>&1" .
-                  " && cp maven-build.* $GEN_BUILDFILE_DIR/$rev_id 2>&1" .
-                  " && cp build.xml $GEN_BUILDFILE_DIR/$rev_id 2>&1";
-        Utils::exec_cmd($cmd, "Convert Maven to Ant build file: " . $rev_id) or die;
+                  " && sed -i \"s/<PROJECT_NAME>/\$name/g\" build.xml";
+        Utils::exec_cmd($cmd, "Patch project name.") or die;
+
+        $cmd = " cd $work_dir" .
+                  " && rm -rf $GEN_BUILDFILE_DIR/$rev_id" .
+                  " && mkdir -p $GEN_BUILDFILE_DIR/$rev_id" .
+                  " && cp -v maven-build.* $GEN_BUILDFILE_DIR/$rev_id" .
+                  " && cp -v build.xml $GEN_BUILDFILE_DIR/$rev_id";
+        Utils::exec_cmd($cmd, "Backup build files.") or die;
 
         $cmd = " cd $work_dir" .
                " && java -jar $LIB_DIR/analyzer.jar $work_dir $ANALYZER_OUTPUT/$bid maven-build.xml 2>&1";
