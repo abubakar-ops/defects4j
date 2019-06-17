@@ -59,7 +59,7 @@ of the checked-out project version.
 
     <hastarget targetname="compile-tests" newtargetname="compile.tests" setproperty="oldLayout" />
     <path id="build.classpath">
-    <pathelement location="${d4j.home}/framework/projects/Math/lib/commons-discovery-0.5.jar" />
+    <pathelement location="${d4j.dir.projects}/Math/lib/commons-discovery-0.5.jar" />
     </path>
     <if> <isset property="oldLayout" /> <then>
         <property name ="test.home" value="${d4j.workdir}/src/test" />

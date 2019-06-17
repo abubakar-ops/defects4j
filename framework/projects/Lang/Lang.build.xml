@@ -27,14 +27,14 @@ of the checked-out project version.
 #############################################################################-->
 <project name="D4J-Lang">
     <!-- Project-specific dependencies -->
-    <property name="easymock.jar" value="${d4j.home}/framework/projects/Lang/lib/easymock.jar"/>
-    <property name="commons-io.jar" value="${d4j.home}/framework/projects/Lang/lib/commons-io.jar"/>
-    <property name="cglib.jar" value="${d4j.home}/framework/projects/Lang/lib/cglib.jar"/>
-    <property name="asm.jar" value="${d4j.home}/framework/projects/Lang/lib/asm.jar"/>
+    <property name="easymock.jar" value="${d4j.dir.projects}/Lang/lib/easymock.jar"/>
+    <property name="commons-io.jar" value="${d4j.dir.projects}/Lang/lib/commons-io.jar"/>
+    <property name="cglib.jar" value="${d4j.dir.projects}/Lang/lib/cglib.jar"/>
+    <property name="asm.jar" value="${d4j.dir.projects}/Lang/lib/asm.jar"/>
 
     <!-- Do not download maven dependencies -->
     <property name="maven.mode.offline" value="true" />
-    <property name="maven.repo.local" value="${d4j.home}/framework/projects/Lang/lib/" />
+    <property name="maven.repo.local" value="${d4j.dir.projects}/Lang/lib/" />
 
     <!-- Compile with debugging information enabled -->
     <property name="compile.debug" value="yes" />
@@ -59,7 +59,7 @@ of the checked-out project version.
 
     <!-- List of relevant developer-written tests that reliably pass on the fixed version -->
     <fileset id="rel.manual.tests" dir="${test.home}"
-        includesfile="${d4j.home}/framework/projects/${d4j.project.id}/relevant_tests/${d4j.bug.id}" />
+        includesfile="${d4j.dir.projects}/${d4j.project.id}/relevant_tests/${d4j.bug.id}" />
 
     <!-- Classpath to run developer-written tests -->
     <path id="d4j.test.classpath">
