@@ -154,7 +154,6 @@
         <exec executable="/bin/bash" failonerror="true">
             <arg value="${d4j.dir.projects}/${d4j.project.id}/chooseDepedencyVersion.sh"/>
             <arg value="${basedir}"/>
-            <arg value="${d4j.home}"/>
         </exec>
     </target>
 
