@@ -232,6 +232,12 @@ system("rm -rf $TMP_DIR");
 #
 sub _get_bug_ids {
     my $target_bid = shift;
+    my @bids = ();
+
+    if (! -e "$TAB_REV_PAIRS" && defined($target_bid)) {
+        push(@bids, $target_bid);
+        return @bids;
+    }
 
     my $min_id;
     my $max_id;
@@ -246,7 +252,6 @@ sub _get_bug_ids {
     my $sth = $dbh_revs->prepare("SELECT $ID FROM $TAB_REV_PAIRS WHERE $PROJECT=? "
                 . "AND $COMP_T2V1=1") or die $dbh_revs->errstr;
     $sth->execute($PID) or die "Cannot query database: $dbh_revs->errstr";
-    my @bids = ();
     foreach (@{$sth->fetchall_arrayref}) {
         my $bid = $_->[0];
         # Skip if project & ID already exist in DB file
