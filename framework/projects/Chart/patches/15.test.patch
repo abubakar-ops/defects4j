@@ -1,7 +1,5 @@
-Index: source/org/jfree/chart/plot/junit/PiePlot3DTests.java
-===================================================================
---- source/org/jfree/chart/plot/junit/PiePlot3DTests.java	(revision 749)
-+++ source/org/jfree/chart/plot/junit/PiePlot3DTests.java	(revision 747)
+--- tests/org/jfree/chart/plot/junit/PiePlot3DTests.java	(revision 749)
++++ tests/org/jfree/chart/plot/junit/PiePlot3DTests.java	(revision 747)
 @@ -2,7 +2,7 @@
   * JFreeChart : a free chart library for the Java(tm) platform
   * ===========================================================

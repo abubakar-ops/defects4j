@@ -1,7 +1,5 @@
-Index: source/org/jfree/chart/plot/junit/ValueMarkerTests.java
-===================================================================
---- source/org/jfree/chart/plot/junit/ValueMarkerTests.java	(revision 283)
-+++ source/org/jfree/chart/plot/junit/ValueMarkerTests.java	(revision 281)
+--- tests/org/jfree/chart/plot/junit/ValueMarkerTests.java	(revision 283)
++++ tests/org/jfree/chart/plot/junit/ValueMarkerTests.java	(revision 281)
 @@ -32,6 +32,8 @@
   * Original Author:  David Gilbert (for Object Refinery Limited);
   * Contributor(s):   -;

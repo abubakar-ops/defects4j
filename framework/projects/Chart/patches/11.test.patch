@@ -1,7 +1,5 @@
-Index: source/org/jfree/chart/util/junit/ShapeUtilitiesTests.java
-===================================================================
---- source/org/jfree/chart/util/junit/ShapeUtilitiesTests.java	(revision 1025)
-+++ source/org/jfree/chart/util/junit/ShapeUtilitiesTests.java	(revision 1024)
+--- tests/org/jfree/chart/util/junit/ShapeUtilitiesTests.java	(revision 1025)
++++ tests/org/jfree/chart/util/junit/ShapeUtilitiesTests.java	(nonexistent)
 @@ -1,248 +0,0 @@
 -/* ===========================================================
 - * JFreeChart : a free chart library for the Java(tm) platform
@@ -251,10 +249,8 @@ Index: source/org/jfree/chart/util/junit/ShapeUtilitiesTests.java
 -    }
 -
 -}
-Index: source/org/jfree/chart/util/junit/UtilPackageTests.java
-===================================================================
---- source/org/jfree/chart/util/junit/UtilPackageTests.java	(revision 1025)
-+++ source/org/jfree/chart/util/junit/UtilPackageTests.java	(revision 1024)
+--- tests/org/jfree/chart/util/junit/UtilPackageTests.java	(revision 1025)
++++ tests/org/jfree/chart/util/junit/UtilPackageTests.java	(revision 1024)
 @@ -6,22 +6,22 @@
   *
   * Project Info:  http://www.jfree.org/jfreechart/index.html
@@ -299,7 +295,7 @@ Index: source/org/jfree/chart/util/junit/UtilPackageTests.java
          suite.addTestSuite(LogFormatTests.class);
          suite.addTestSuite(PaintListTests.class);
          suite.addTestSuite(RelativeDateFormatTests.class);
--//        suite.addTestSuite(SerialUtilitiesTests.class);
+-        suite.addTestSuite(SerialUtilitiesTests.class);
 -        suite.addTestSuite(ShapeUtilitiesTests.class);
          suite.addTestSuite(StrokeListTests.class);
          return suite;

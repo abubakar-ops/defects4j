@@ -1,7 +1,5 @@
-Index: source/org/jfree/data/general/junit/DatasetUtilitiesTests.java
-===================================================================
---- source/org/jfree/data/general/junit/DatasetUtilitiesTests.java	(revision 2242)
-+++ source/org/jfree/data/general/junit/DatasetUtilitiesTests.java	(revision 2240)
+--- tests/org/jfree/data/general/junit/DatasetUtilitiesTests.java	(revision 2242)
++++ tests/org/jfree/data/general/junit/DatasetUtilitiesTests.java	(revision 2240)
 @@ -81,8 +81,6 @@
  import org.jfree.data.xy.IntervalXYDataset;
  import org.jfree.data.xy.TableXYDataset;

@@ -1,7 +1,5 @@
-Index: source/org/jfree/chart/renderer/junit/GrayPaintScaleTests.java
-===================================================================
---- source/org/jfree/chart/renderer/junit/GrayPaintScaleTests.java	(revision 190)
-+++ source/org/jfree/chart/renderer/junit/GrayPaintScaleTests.java	(revision 188)
+--- tests/org/jfree/chart/renderer/junit/GrayPaintScaleTests.java	(revision 190)
++++ tests/org/jfree/chart/renderer/junit/GrayPaintScaleTests.java	(revision 188)
 @@ -2,7 +2,7 @@
   * JFreeChart : a free chart library for the Java(tm) platform
   * ===========================================================

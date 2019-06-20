@@ -1,7 +1,5 @@
-Index: source/org/jfree/chart/plot/junit/CategoryPlotTests.java
-===================================================================
---- source/org/jfree/chart/plot/junit/CategoryPlotTests.java	(revision 434)
-+++ source/org/jfree/chart/plot/junit/CategoryPlotTests.java	(revision 430)
+--- tests/org/jfree/chart/plot/junit/CategoryPlotTests.java	(revision 434)
++++ tests/org/jfree/chart/plot/junit/CategoryPlotTests.java	(revision 430)
 @@ -113,14 +113,6 @@
      public CategoryPlotTests(String name) {
          super(name);

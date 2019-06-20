@@ -1,7 +1,5 @@
-Index: source/org/jfree/chart/renderer/category/junit/StatisticalBarRendererTests.java
-===================================================================
---- source/org/jfree/chart/renderer/category/junit/StatisticalBarRendererTests.java	(revision 164)
-+++ source/org/jfree/chart/renderer/category/junit/StatisticalBarRendererTests.java	(revision 162)
+--- tests/org/jfree/chart/renderer/category/junit/StatisticalBarRendererTests.java	(revision 164)
++++ tests/org/jfree/chart/renderer/category/junit/StatisticalBarRendererTests.java	(revision 162)
 @@ -37,7 +37,6 @@
   * Changes
   * -------

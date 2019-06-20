@@ -1,7 +1,5 @@
-Index: source/org/jfree/data/time/junit/TimeSeriesTests.java
-===================================================================
---- source/org/jfree/data/time/junit/TimeSeriesTests.java	(revision 622)
-+++ source/org/jfree/data/time/junit/TimeSeriesTests.java	(revision 621)
+--- tests/org/jfree/data/time/junit/TimeSeriesTests.java	(revision 622)
++++ tests/org/jfree/data/time/junit/TimeSeriesTests.java	(revision 621)
 @@ -44,7 +44,6 @@
   * 24-May-2006 : Added new tests (DG);
   * 21-Jun-2007 : Removed JCommon dependencies (DG);
