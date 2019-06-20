@@ -39,3 +39,10 @@ org.apache.commons.math.stat.descriptive.summary.SumLogTest
 org.apache.commons.math.stat.descriptive.summary.SumSqTest
 org.apache.commons.math.stat.descriptive.summary.SumTest
 org.apache.commons.math.util.MathUtilsTest
+org.apache.commons.math.ArgumentOutsideDomainExceptionTest
+org.apache.commons.math.ConvergenceExceptionTest
+org.apache.commons.math.DuplicateSampleAbscissaExceptionTest
+org.apache.commons.math.FunctionEvaluationExceptionTest
+org.apache.commons.math.MathConfigurationExceptionTest
+org.apache.commons.math.MathExceptionTest
+org.apache.commons.math.MaxIterationsExceededExceptionTest
