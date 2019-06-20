@@ -82,11 +82,10 @@ diff --git a/test/com/google/javascript/jscomp/SemanticReverseAbstractInterprete
 index 947515e0..14bfbbc3 100644
 --- a/test/com/google/javascript/jscomp/SemanticReverseAbstractInterpreterTest.java
 +++ b/test/com/google/javascript/jscomp/SemanticReverseAbstractInterpreterTest.java
-@@ -332,24 +332,6 @@ public class SemanticReverseAbstractInterpreterTest
-         Sets.newHashSet(new TypedName("a", NUMBER_TYPE)));
+@@ -333,24 +333,6 @@ public class SemanticReverseAbstractInterpreterTest
    }
  
--  /**
+   /**
 -   * Tests reverse interpretation of two undefineds.
 -   */
 -  @SuppressWarnings("unchecked")
@@ -104,9 +103,10 @@ index 947515e0..14bfbbc3 100644
 -            new TypedName("b", NO_TYPE)));
 -  }
 -
-   /**
+-  /**
     * Tests reverse interpretation of a COMPARE(NAME, NUMBER) expression,
     * where COMPARE can be LE, LT, GE or GT.
+    */
 diff --git a/test/com/google/javascript/jscomp/SimpleDefinitionFinderTest.java b/test/com/google/javascript/jscomp/SimpleDefinitionFinderTest.java
 index a9cba8da..306420c8 100644
 --- a/test/com/google/javascript/jscomp/SimpleDefinitionFinderTest.java
