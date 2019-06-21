@@ -120,13 +120,13 @@ system("mkdir -p $OUTPUT_DIR/$PID");
 my $project = Project::create_project($PID);
 my $dbh_trigger = DB::get_db_handle($TAB_TRIGGER, $WORK_DIR);
 
-my @rev_specific_files = ("failing_tests/<rev>", "build_files/<rev>");
+my @rev_specific_files = ("failing_tests/<rev>", "dependent_tests/<rev>", "build_files/<rev>");
 my @id_specific_files = ("loaded_classes/<id>.src", "loaded_classes/<id>.test",
                             "modified_classes/<id>.src", "modified_classes/<id>.test",
                             "patches/<id>.src.patch", "patches/<id>.test.patch",
                             "trigger_tests/<id>", "relevant_tests/<id>");
 my @generic_files_and_directories_to_replace = ("build.xml.patch", "${PID}.build.xml", "lib");
-my @generic_files_to_append = ("dependent_tests", "dir-layout.csv");
+my @generic_files_to_append = ("dir-layout.csv");
 
 my @ids = _get_bug_ids($BID);
 foreach my $id (@ids) {

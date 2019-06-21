@@ -595,15 +595,9 @@ sub fix_tests {
     }
 
     # Remove flaky/dependent tests, if any
-    my $dependent_test_file = "$PROJECTS_DIR/$pid/dependent_tests";
+    my $dependent_test_file = "$PROJECTS_DIR/$pid/dependent_tests/$revision_id";
     if (-e $dependent_test_file) {
         $self->exclude_tests_in_file($dependent_test_file, $dir);
-    }
-
-    # Remove randomly failing tests, if any
-    my $random_tests_file = "$PROJECTS_DIR/$pid/random_tests";
-    if (-e $random_tests_file) {
-        $self->exclude_tests_in_file($random_tests_file, $dir);
     }
 }
 

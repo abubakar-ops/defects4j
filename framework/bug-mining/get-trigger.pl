@@ -143,8 +143,9 @@ my @COLS = DB::get_tab_columns($TAB_TRIGGER) or die;
 my $TRIGGER_DIR = "$PROJECTS_DIR/$PID/trigger_tests";
 system("mkdir -p $TRIGGER_DIR");
 
-# dependent tests saved to this file
-my $DEP_TEST_FILE            = "$PROJECTS_DIR/$PID/dependent_tests";
+# Set up directory for dependent tests
+my $DEPENDENT_DIR = "$PROJECTS_DIR/$PID/dependent_tests";
+system("mkdir -p $DEPENDENT_DIR");
 
 # Temporary files used for saving failed test results in
 my $FAILED_TESTS_FILE        = "$TMP_DIR/test.run";
@@ -212,11 +213,12 @@ foreach my $bid (@bids) {
               " be considered bugfix however it might not be captured by any unit test case)\n");
     }
 
-    # Save dependent tests to $DEP_TEST_FILE
+    # Save dependent tests to $DEPENDENT_DIR/$revision_id
     my @dependent_tests = grep { !($_ ~~  @{$list}) } @fail_in_order;
+    my $dependent_tests_file = "$DEPENDENT_DIR/" . $project->lookup("${bid}f");
     for my $dependent_test (@dependent_tests) {
         print " ## Warning: Dependent test ($dependent_test) is being added to list.\n";
-        system("echo '--- $dependent_test' >> $DEP_TEST_FILE");
+        system("echo '--- $dependent_test' >> $dependent_tests_file");
     }
 
     # Add data
