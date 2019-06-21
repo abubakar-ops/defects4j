@@ -47,3 +47,6 @@ com.google.javascript.rhino.jstype.FunctionBuilder
 com.google.javascript.rhino.jstype.ObjectType
 com.google.javascript.rhino.jstype.FunctionType
 com.google.javascript.jscomp.parsing.JsDocToken
+com.google.javascript.jscomp.testing.TestErrorReporter
+com.google.javascript.rhino.testing.TestErrorReporter
+com.google.javascript.rhino.testing.BaseJSTypeTestCase

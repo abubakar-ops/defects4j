@@ -32,7 +32,6 @@ com.google.javascript.rhino.jstype.FunctionType
 com.google.javascript.jscomp.parsing.JsDocToken
 com.google.javascript.jscomp.ScopeCreator
 com.google.javascript.rhino.ScriptOrFnNode
-com.google.javascript.rhino.Token
 com.google.javascript.jscomp.deps.DependencyInfo
 com.google.javascript.jscomp.CompilerOptions
 com.google.javascript.jscomp.VariableReferenceCheck
@@ -61,7 +60,6 @@ com.google.javascript.jscomp.DiagnosticGroup
 com.google.javascript.jscomp.CodeConsumer
 com.google.javascript.rhino.jstype.StaticScope
 com.google.javascript.jscomp.SemanticReverseAbstractInterpreter
-com.google.javascript.rhino.jstype.TernaryValue
 com.google.javascript.jscomp.TypeValidator
 com.google.javascript.rhino.JSTypeExpression
 com.google.javascript.jscomp.AnonymousFunctionNamingPolicy
@@ -123,3 +121,4 @@ com.google.javascript.jscomp.ErrorManager
 com.google.javascript.jscomp.CodeChangeHandler
 com.google.javascript.jscomp.CompilerInput
 com.google.javascript.jscomp.VariableRenamingPolicy
+com.google.javascript.rhino.testing.BaseJSTypeTestCase

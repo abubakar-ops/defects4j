@@ -161,3 +161,4 @@ com.google.javascript.rhino.jstype.Property
 com.google.javascript.jscomp.CodeChangeHandler
 com.google.javascript.jscomp.CompilerInput
 com.google.javascript.jscomp.VariableRenamingPolicy
+com.google.javascript.rhino.testing.BaseJSTypeTestCase

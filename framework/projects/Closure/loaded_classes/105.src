@@ -10,7 +10,6 @@ com.google.javascript.rhino.jstype.NumberType
 com.google.javascript.jscomp.PassConfig
 com.google.javascript.jscomp.FoldConstants
 com.google.javascript.rhino.jstype.PrototypeObjectType
-com.google.javascript.jscomp.Scope
 com.google.javascript.jscomp.NodeTraversal
 com.google.javascript.rhino.jstype.TemplateType
 com.google.javascript.jscomp.JSSourceFile
@@ -32,7 +31,6 @@ com.google.javascript.rhino.ObjToIntMap
 com.google.javascript.rhino.jstype.FunctionType
 com.google.javascript.jscomp.ScopeCreator
 com.google.javascript.rhino.ScriptOrFnNode
-com.google.javascript.rhino.Token
 com.google.javascript.jscomp.CompilerOptions
 com.google.javascript.jscomp.CodePrinter
 com.google.javascript.jscomp.AbstractMessageFormatter
@@ -46,7 +44,6 @@ com.google.javascript.jscomp.AbstractCompiler
 com.google.javascript.rhino.jstype.UnionTypeBuilder
 com.google.javascript.rhino.jstype.AllType
 com.google.javascript.rhino.jstype.ValueType
-com.google.javascript.rhino.TokenStream
 com.google.javascript.jscomp.ProcessDefines
 com.google.javascript.rhino.ErrorReporter
 com.google.javascript.rhino.jstype.JSTypeNative
@@ -59,11 +56,9 @@ com.google.javascript.jscomp.TypeValidator
 com.google.javascript.jscomp.AnonymousFunctionNamingPolicy
 com.google.javascript.rhino.jstype.NamedType
 com.google.javascript.jscomp.ClosureCodingConvention
-com.google.javascript.rhino.jstype.StaticSlot
 com.google.javascript.rhino.jstype.RecordType
 com.google.javascript.jscomp.CheckAccessControls
 com.google.javascript.jscomp.JSModuleGraph
-com.google.javascript.rhino.JSDocInfo
 com.google.javascript.jscomp.CodingConvention
 com.google.javascript.jscomp.PropertyRenamingPolicy
 com.google.javascript.jscomp.CodeGenerator
@@ -111,3 +106,4 @@ com.google.javascript.jscomp.CodeChangeHandler
 com.google.javascript.jscomp.InlineCostEstimator
 com.google.javascript.jscomp.CompilerInput
 com.google.javascript.jscomp.VariableRenamingPolicy
+com.google.javascript.rhino.testing.BaseJSTypeTestCase

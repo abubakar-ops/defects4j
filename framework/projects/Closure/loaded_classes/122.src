@@ -54,3 +54,6 @@ com.google.javascript.rhino.jstype.FunctionParamBuilder
 com.google.javascript.rhino.jstype.BooleanType
 com.google.javascript.jscomp.parsing.IRFactory
 com.google.javascript.rhino.jstype.Property
+com.google.javascript.rhino.testing.BaseJSTypeTestCase
+com.google.javascript.jscomp.testing.TestErrorReporter
+com.google.javascript.rhino.testing.TestErrorReporter

@@ -14,7 +14,6 @@ com.google.javascript.rhino.jstype.AllType
 com.google.javascript.rhino.jstype.ValueType
 com.google.javascript.rhino.ErrorReporter
 com.google.javascript.rhino.jstype.JSTypeNative
-com.google.javascript.rhino.jstype.StaticScope
 com.google.javascript.rhino.JSTypeExpression
 com.google.javascript.rhino.jstype.NamedType
 com.google.javascript.rhino.jstype.RecordType
@@ -34,3 +33,5 @@ com.google.javascript.rhino.jstype.Visitor
 com.google.javascript.rhino.jstype.BooleanType
 com.google.javascript.rhino.jstype.FunctionPrototypeType
 com.google.javascript.rhino.jstype.UnionType
+com.google.javascript.rhino.testing.BaseJSTypeTestCase
+com.google.javascript.rhino.testing.TestErrorReporter

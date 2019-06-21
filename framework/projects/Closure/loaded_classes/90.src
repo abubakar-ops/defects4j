@@ -2,7 +2,6 @@ com.google.javascript.rhino.jstype.StringType
 com.google.javascript.jscomp.MemoizedScopeCreator
 com.google.javascript.jscomp.LightweightMessageFormatter
 com.google.javascript.jscomp.ComposeWarningsGuard
-com.google.javascript.rhino.FunctionNode
 com.google.javascript.jscomp.TypeCheck
 com.google.javascript.rhino.EvaluatorException
 com.google.javascript.jscomp.JSModule
@@ -10,7 +9,6 @@ com.google.javascript.rhino.Node
 com.google.javascript.jscomp.LinkedFlowScope
 com.google.javascript.rhino.jstype.NumberType
 com.google.javascript.jscomp.PassConfig
-com.google.javascript.jscomp.ProcessClosurePrimitives
 com.google.javascript.rhino.jstype.PrototypeObjectType
 com.google.javascript.jscomp.TypeInference
 com.google.javascript.jscomp.JoinOp
@@ -37,8 +35,6 @@ com.google.javascript.rhino.jstype.FunctionType
 com.google.javascript.jscomp.parsing.JsDocToken
 com.google.javascript.jscomp.CheckUnreachableCode
 com.google.javascript.jscomp.ScopeCreator
-com.google.javascript.rhino.ScriptOrFnNode
-com.google.javascript.rhino.jstype.BooleanLiteralSet
 com.google.javascript.jscomp.deps.DependencyInfo
 com.google.javascript.jscomp.FunctionTypeBuilder
 com.google.javascript.jscomp.CompilerOptions
@@ -60,13 +56,11 @@ com.google.javascript.rhino.jstype.NoType
 com.google.javascript.jscomp.ControlFlowGraph
 com.google.javascript.jscomp.AbstractCompiler
 com.google.javascript.jscomp.SuppressDocWarningsGuard
-com.google.javascript.jscomp.CssRenamingMap
 com.google.javascript.jscomp.ControlFlowAnalysis
 com.google.javascript.rhino.jstype.UnionTypeBuilder
 com.google.javascript.rhino.jstype.AllType
 com.google.javascript.rhino.jstype.ValueType
 com.google.javascript.jscomp.ProcessDefines
-com.google.javascript.jscomp.ClosureReverseAbstractInterpreter
 com.google.javascript.rhino.ErrorReporter
 com.google.javascript.rhino.jstype.JSTypeNative
 com.google.javascript.jscomp.CheckGlobalNames
@@ -74,7 +68,6 @@ com.google.javascript.jscomp.DiagnosticGroup
 com.google.javascript.rhino.jstype.StaticScope
 com.google.javascript.jscomp.graph.Annotatable
 com.google.javascript.jscomp.SemanticReverseAbstractInterpreter
-com.google.javascript.rhino.jstype.TernaryValue
 com.google.javascript.jscomp.InferJSDocInfo
 com.google.javascript.rhino.jstype.SimpleSlot
 com.google.javascript.jscomp.TypeValidator
@@ -148,3 +141,4 @@ com.google.javascript.jscomp.graph.Graph
 com.google.javascript.jscomp.CodeChangeHandler
 com.google.javascript.jscomp.CompilerInput
 com.google.javascript.jscomp.VariableRenamingPolicy
+com.google.javascript.rhino.testing.BaseJSTypeTestCase

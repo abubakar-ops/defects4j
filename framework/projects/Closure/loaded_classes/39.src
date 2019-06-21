@@ -36,3 +36,6 @@ com.google.javascript.rhino.jstype.ParameterizedType
 com.google.javascript.rhino.jstype.FunctionParamBuilder
 com.google.javascript.rhino.jstype.BooleanType
 com.google.javascript.rhino.jstype.UnionType
+com.google.javascript.rhino.testing.BaseJSTypeTestCase
+com.google.javascript.rhino.testing.TestErrorReporter
+com.google.javascript.rhino.testing.Asserts

@@ -141,3 +141,4 @@ com.google.javascript.jscomp.parsing.IRFactory
 com.google.javascript.jscomp.WarningsGuard
 com.google.javascript.jscomp.ErrorManager
 com.google.javascript.rhino.jstype.Property
+com.google.javascript.rhino.testing.BaseJSTypeTestCase
