@@ -140,8 +140,8 @@ my $dbh_revs = DB::get_db_handle($TAB_REV_PAIRS, $db_dir);
 my @COLS = DB::get_tab_columns($TAB_TRIGGER) or die;
 
 # Set up directory for triggering tests
-my $OUT_DIR = "$PROJECTS_DIR/$PID/trigger_tests";
-system("mkdir -p $OUT_DIR");
+my $TRIGGER_DIR = "$PROJECTS_DIR/$PID/trigger_tests";
+system("mkdir -p $TRIGGER_DIR");
 
 # dependent tests saved to this file
 my $DEP_TEST_FILE            = "$PROJECTS_DIR/$PID/dependent_tests";
@@ -203,9 +203,9 @@ foreach my $bid (@bids) {
     $data{$FAIL_ISO_V1} = scalar(@$list);
     print "List of test methods: (failed in isolation on v1)\n" . join ("\n", @$list) . "\n";
 
-     # Save non-dependent triggering tests to $OUT_DIR/$bid
+     # Save non-dependent triggering tests to $TRIGGER_DIR/$bid
     if (scalar(@{$list}) > 0) {
-        system("cp $FAILED_TESTS_FILE $OUT_DIR/$bid");
+        system("cp $FAILED_TESTS_FILE $TRIGGER_DIR/$bid");
     } else {
         print("No triggering test case has been found. This could either mean that no test" .
               " has been executed or that all test cases pass (e.g., a javadoc change could" .
