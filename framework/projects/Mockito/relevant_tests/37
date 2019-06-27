@@ -43,3 +43,4 @@ org.mockitousage.stubbing.StubbingWithThrowablesTest
 org.mockitousage.verification.BasicVerificationTest
 org.mockitousage.verification.ExactNumberOfTimesVerificationTest
 org.mockitousage.verification.NoMoreInteractionsVerificationTest
+org.concurrentmockito.ThreadsRunAllTestsHalfManualTest

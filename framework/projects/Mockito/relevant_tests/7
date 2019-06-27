@@ -4,3 +4,4 @@ org.mockitousage.bugs.DeepStubsWronglyReportsSerializationProblemsTest
 org.mockitousage.bugs.deepstubs.DeepStubFailingWhenGenricNestedAsRawTypeTest
 org.mockitousage.serialization.DeepStubsSerializableTest
 org.mockitousage.stubbing.DeepStubbingTest
+org.concurrentmockito.ThreadsRunAllTestsHalfManualTest

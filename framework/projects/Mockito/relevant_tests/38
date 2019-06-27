@@ -12,3 +12,4 @@ org.mockitousage.verification.BasicVerificationTest
 org.mockitousage.verification.DescriptiveMessagesWhenVerificationFailsTest
 org.mockitousage.verification.PrintingVerboseTypesWithArgumentsTest
 org.mockitousage.verification.VerificationUsingMatchersTest
+org.concurrentmockito.ThreadsRunAllTestsHalfManualTest

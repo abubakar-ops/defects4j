@@ -146,3 +146,4 @@ com.google.javascript.jscomp.VarCheck
 com.google.javascript.jscomp.BasicErrorManager
 com.google.javascript.jscomp.parsing.Annotation
 com.google.javascript.jscomp.CombinedCompilerPass
+com.google.javascript.rhino.jstype.SimpleSlot

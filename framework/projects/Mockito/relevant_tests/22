@@ -76,3 +76,4 @@ org.mockitousage.verification.VerificationInOrderTest
 org.mockitousage.verification.VerificationInOrderWithCallsTest
 org.mockitousage.verification.VerificationOnMultipleMocksUsingMatchersTest
 org.mockitousage.verification.VerificationUsingMatchersTest
+org.concurrentmockito.ThreadsRunAllTestsHalfManualTest
