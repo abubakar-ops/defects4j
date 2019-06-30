@@ -13,6 +13,8 @@
         <!-- Add libraries if necessary -->
         <pathelement location="${dir.target.classes}" />
         <pathelement location="lib/junit-4.11.jar"/>
+        <pathelement location="lib/javassist-3.25.0-GA.jar"/>
+        <pathelement location="lib/commons-io-2.6.jar"/>
     </path>
 
     <!-- Test classpath -->
@@ -20,6 +22,8 @@
         <pathelement location="${dir.target.classes}"/>
         <pathelement location="${dir.target.tests}"/>
         <pathelement location="lib/junit-4.11.jar"/>
+        <pathelement location="lib/javassist-3.25.0-GA.jar"/>
+        <pathelement location="lib/commons-io-2.6.jar"/>
     </path>
 
     <target name="clean" description="Clean the project">
@@ -55,7 +59,12 @@
     </target>
 
     <target name="jar" depends="compile" description="Build jar for this project">
-        <jar destfile="${dir.jar}/formatter.jar" basedir="${dir.target.classes}"/>
+        <jar destfile="${dir.jar}/formatter.jar" basedir="${dir.target.classes}">
+            <zipgroupfileset dir="lib">
+                <include name="javassist-3.25.0-GA.jar" />
+                <include name="commons-io-2.6.jar" />
+            </zipgroupfileset>
+        </jar>
     </target>
 
     <target name="test" depends="compile.tests">

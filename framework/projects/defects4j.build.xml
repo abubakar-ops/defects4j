@@ -101,29 +101,94 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
 <!--
     Run developer-written tests
 -->
-    <target name="run.dev.tests" depends="compile.tests,update.all.tests" description="Run unit tests">
-        <junit printsummary="yes" haltonfailure="no" haltonerror="no" fork="no" showOutput="true">
-            <classpath>
-                <!-- Make sure that instrumented classes appear at the beginning of the
-                     classpath -->
-                <pathelement location="${d4j.dir.classes.instrumented}" />
-                <pathelement path="${formatter.jar}" />
-                <pathelement path="${cobertura.jar}" />
-                <path refid="d4j.test.classpath"/>
-            </classpath>
+    <target name="run.dev.tests" depends="compile.tests" description="Run unit tests">
 
-            <sysproperty key="OUTFILE" value="${OUTFILE}"/>
-            <formatter classname="edu.washington.cs.mut.testrunner.Formatter" usefile="false" />
-            <test name="${test.entry.class}" methods="${test.entry.method}" if="test.entry.class" />
-            <batchtest unless="test.entry.class">
-                <fileset refid="all.manual.tests" />
-            </batchtest>
-        </junit>
-        <!-- fail build in case we are running all classes, but there are none in the fileset -->
-        <if> <not> <isset property="test.entry.class" /> </not> <then>
-            <pathconvert refid="all.manual.tests" property="fileset.notempty" setonempty="false" />
-            <fail unless="fileset.notempty" message="Test is running with empty fileset" />
-        </then> </if>
+        <!--
+          Get list of all unit test cases to run
+        -->
+
+        <if>
+            <!-- Both test class name and test method name are defined -->
+            <and>
+                <isset property="test.entry.class" />
+                <isset property="test.entry.method" />
+            </and>
+            <then>
+                <property name="tests.expr" value="${test.entry.class}::${test.entry.method}" />
+            </then>
+            <!-- Only test class name is defined -->
+            <elseif>
+                <and>
+                    <isset property="test.entry.class" />
+                    <not> <isset property="test.entry.method" /> </not>
+                </and>
+                <then>
+                    <property name="tests.expr" value="${test.entry.class}::*" />
+                </then>
+            </elseif>
+            <!-- Only test method name is defined -->
+            <elseif>
+                <and>
+                    <not> <isset property="test.entry.class" /> </not>
+                    <isset property="test.entry.method" />
+                </and>
+                <then>
+                    <property name="tests.expr" value="*::${test.entry.method}" />
+                </then>
+            </elseif>
+            <!-- Neither test class name or test method is defined -->
+            <elseif>
+                <and>
+                    <not> <isset property="test.entry.class" /> </not>
+                    <not> <isset property="test.entry.method" /> </not>
+                    <not> <available file="${d4j.dir.projects}/${d4j.project.id}/relevant_tests/${d4j.bug.id}" /> </not>
+                </and>
+                <then>
+                    <!-- Literally all unit test cases -->
+                    <property name="tests.expr" value="*::*" />
+                </then>
+            </elseif>
+        </if>
+        <if> <isset property="tests.expr" /> <then>
+            <property name="tests.file" value="${test.classes.dir}/tests_to_run.txt" />
+            <antcall target="collect.unit.tests" />
+        </then>
+        <else>
+            <!-- Run all relevant test cases -->
+            <property name="tests.file" value="${d4j.dir.projects}/${d4j.project.id}/relevant_tests/${d4j.bug.id}"/>
+        </else>
+        </if>
+
+        <!--
+          Run each unit test case in isolation
+        -->
+
+        <loadfile property="list.tests.to.run" srcfile="${tests.file}" />
+        <for param="test.to.run" list="${list.tests.to.run}" delimiter="${line.separator}">
+            <sequential>
+                <propertyregex property="test.class" input="@{test.to.run}" regexp="^(.*)::.*$" select="\1" />
+                <propertyregex property="test.method" input="@{test.to.run}" regexp="^.*::(.*)$" select="\1" />
+                <echo message="Running unit test '${test.method}' of the test class '${test.class}'" />
+
+                <junit printsummary="yes" haltonfailure="no" haltonerror="no" fork="no" showOutput="true">
+                    <classpath>
+                        <!-- Make sure that instrumented classes appear at the beginning of the
+                             classpath -->
+                        <pathelement location="${d4j.dir.classes.instrumented}" />
+                        <pathelement path="${formatter.jar}" />
+                        <pathelement path="${cobertura.jar}" />
+                        <path refid="d4j.test.classpath"/>
+                    </classpath>
+
+                    <sysproperty key="OUTFILE" value="${OUTFILE}"/>
+                    <formatter classname="edu.washington.cs.mut.testrunner.Formatter" usefile="false" />
+                    <test name="${test.class}" methods="${test.method}" />
+                </junit>
+
+                <var name="test.class" unset="true" />
+                <var name="test.method" unset="true" />
+            </sequential>
+        </for>
     </target>
 
 <!--
@@ -366,6 +431,34 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
             </filterchain>
         </loadfile>
         <fileset id="all.manual.tests" dir="${test.home}" includes="${rel.files}"/>
+    </target>
+
+<!--
+    Collect list of developer-written unit tests
+-->
+    <target name="collect.unit.tests" depends="compile.tests" description="Collect list of developer-written unit tests">
+        <fail message="Property test.classes.dir not set!" unless="test.classes.dir" />
+        <fail message="Property tests.expr not set!" unless="tests.expr" />
+        <fail message="Property tests.file not set!" unless="tests.file" />
+
+        <delete file="${tests.file}" />
+
+        <echo message="Expression to search for unit test cases: ${tests.expr}" />
+        <java classname="edu.washington.cs.mut.testfinder.TestFinder" fork="true">
+            <classpath>
+                <pathelement location="${d4j.dir.classes.instrumented}" />
+                <pathelement path="${formatter.jar}" />
+                <path refid="d4j.test.classpath"/>
+            </classpath>
+            <arg value="${tests.file}" />
+            <arg value="${test.classes.dir}" />
+            <arg value="${tests.expr}" />
+        </java>
+
+        <if> <not> <available file="${tests.file}" /> </not> <then>
+            <fail message="${tests.file} does not exist!" />
+            </then>
+        </if>
     </target>
 
 <!--
