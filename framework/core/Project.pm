@@ -574,7 +574,7 @@ sub run_ext_tests {
 
 Removes all broken tests in the checked-out program version. Which tests are broken and
 removed is determined based on the provided version id C<vid>:
-all tests listed in F<$PROJECTS_DIR/$PID/failing_tests/rev-id> are removed.
+all tests listed in F<$PROJECTS_DIR/$PID/failing_tests/bid> are removed.
 
 =cut
 sub fix_tests {
@@ -583,13 +583,16 @@ sub fix_tests {
     Utils::check_vid($vid);
 
     my $pid = $self->{pid};
+    my $bid = $vid;
+    $bid =~ /^(\d+)[bf]$/;
+    $bid = $1;
     my $dir = $self->test_dir($vid);
 
     # TODO: Exclusively use version ids rather than revision ids
     # -> The bug-mining script that populates the database should deal with any
     # ID conversions.
     my $revision_id = $self->lookup($vid);
-    my $failing_tests_file = "$PROJECTS_DIR/$pid/failing_tests/$revision_id";
+    my $failing_tests_file = "$PROJECTS_DIR/$pid/failing_tests/$bid";
     if (-e $failing_tests_file) {
         $self->exclude_tests_in_file($failing_tests_file, $dir);
     }

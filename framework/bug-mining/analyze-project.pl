@@ -243,7 +243,7 @@ sub _check_t2v2 {
     my $v2 = $project->lookup("${bid}f");
 
     # Clean previous results
-    `>$FAILING_DIR/$v2` if -e "$FAILING_DIR/$v2";
+    `>$FAILING_DIR/$bid` if -e "$FAILING_DIR/$bid";
 
     # Checkout v2
     $project->checkout_vid("${bid}f", $TMP_DIR, 1) == 1 or die;
@@ -278,10 +278,10 @@ sub _check_t2v2 {
 
         # Append to log if there were (new) failing tests
         unless ($fail == 0) {
-            open(OUT, ">>$FAILING_DIR/$v2") or die "Cannot write failing tests: $!";
-            print OUT "## $project->{prog_name}: $v2 ##\n";
+            open(OUT, ">>$FAILING_DIR/$bid") or die "Cannot write failing tests: $!";
+            print OUT "## $project->{prog_name}: $bid ##\n";
             close OUT;
-            system("cat $file >> $FAILING_DIR/$v2");
+            system("cat $file >> $FAILING_DIR/$bid");
             $successful_runs = 0;
         }
         ++$run;

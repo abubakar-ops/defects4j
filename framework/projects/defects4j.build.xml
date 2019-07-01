@@ -446,6 +446,48 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
         <fail message="Property tests.expr not set!" unless="tests.expr" />
         <fail message="Property tests.file not set!" unless="tests.file" />
 
+        <property name="failing.tests.file" value="${d4j.dir.projects}/${d4j.project.id}/failing_tests/${d4j.bug.id}"/>
+
+        <if> <available file="${failing.tests.file}" /> <then>
+            <loadfile srcfile="${failing.tests.file}" property="failing.classes.list">
+                <filterchain>
+                    <containsregex pattern="^--- ([^:]+)$" replace="\1" flags="g" />
+                    <suffixlines suffix="::*," />
+                    <striplinebreaks/>
+                </filterchain>
+            </loadfile>
+            <loadfile srcfile="${failing.tests.file}" property="failing.tests.list">
+                <filterchain>
+                    <containsregex pattern="^--- (.*::.*)$" replace="\1" flags="g" />
+                    <suffixlines suffix="," />
+                    <striplinebreaks/>
+                </filterchain>
+            </loadfile>
+            <if> <and> <isset property="failing.tests.list" /> <isset property="failing.classes.list" /> </and> <then>
+                <property name="exclude.tests.expr" value="${failing.tests.list}${failing.classes.list}" />
+                </then>
+                <elseif> <isset property="failing.tests.list" /> <then>
+                    <property name="exclude.tests.expr" value="${failing.tests.list}" />
+                </then>
+                </elseif>
+                <elseif> <isset property="failing.classes.list" /> <then>
+                    <property name="exclude.tests.expr" value="${failing.classes.list}" />
+                </then>
+                </elseif>
+                <else>
+                    <property name="exclude.tests.expr" value="" />
+                </else>
+            </if>
+
+            <echo message="failing.classes.list: ${failing.classes.list}" />
+            <echo message="failing.tests.list: ${failing.tests.list}" />
+            <echo message="exclude.tests.expr: ${exclude.tests.expr}" />
+        </then>
+        <else>
+            <property name="exclude.tests.expr" value="" />
+        </else>
+        </if>
+
         <delete file="${tests.file}" />
 
         <echo message="Expression to search for unit test cases: ${tests.expr}" />
@@ -457,6 +499,7 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
             </classpath>
             <arg value="${tests.file}" />
             <arg value="${test.classes.dir}" />
+            <arg value="${exclude.tests.expr}" />
             <arg value="${tests.expr}" />
         </java>
 
