@@ -19,11 +19,13 @@ public class TestJUnitThreeTestFinder {
 
     private static final ClassPool classPool = ClassPool.getDefault();
 
+    private static final WildcardMatcher excludeMatcher = new WildcardMatcher("");
+
     @Test
     public void testAbstractTestClass() throws Exception {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
         final CtClass ctClass = classPool.get(AbstractTestClass.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertTrue(tests.isEmpty());
     }
 
@@ -31,7 +33,7 @@ public class TestJUnitThreeTestFinder {
     public void testEmptyTestClass() throws Exception {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
         final CtClass ctClass = classPool.get(EmptyTestClass.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         for (String test : tests) {
             System.err.println(test);
         }
@@ -42,7 +44,7 @@ public class TestJUnitThreeTestFinder {
     public void testNonJUnitTestClass() throws Exception {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
         final CtClass ctClass = classPool.get(NonJUnitTest.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertTrue(tests.isEmpty());
     }
 
@@ -51,21 +53,21 @@ public class TestJUnitThreeTestFinder {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
 
         CtClass ctClass = classPool.get(SimpleTest.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertEquals(3, tests.size());
         assertEquals(SimpleTest.class.getCanonicalName() + "::test1", tests.get(0));
         assertEquals(SimpleTest.class.getCanonicalName() + "::test2", tests.get(1));
         assertEquals(SimpleTest.class.getCanonicalName() + "::test3", tests.get(2));
 
         ctClass = classPool.get(Timeout.class.getCanonicalName());
-        tests = JUnitTestFinder.find(matcher, ctClass);
+        tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertEquals(3, tests.size());
         assertEquals(Timeout.class.getCanonicalName() + "::test1", tests.get(0));
         assertEquals(Timeout.class.getCanonicalName() + "::test2", tests.get(1));
         assertEquals(Timeout.class.getCanonicalName() + "::test3", tests.get(2));
 
         ctClass = classPool.get(InitError.class.getCanonicalName());
-        tests = JUnitTestFinder.find(matcher, ctClass);
+        tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertTrue(tests.isEmpty());
     }
 }

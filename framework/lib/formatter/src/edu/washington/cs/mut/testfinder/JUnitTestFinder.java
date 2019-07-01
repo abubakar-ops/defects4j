@@ -18,12 +18,13 @@ public class JUnitTestFinder {
      * Collects all JUnit test methods that match a given matcher in a given
      * class.
      *
-     * @param testsMatcher wildcard expression
+     * @param patternsToExclude wildcard expression to exclude tests
+     * @param patternsToInclude wildcard expression to include tests
      * @param ctClass a {@link javassist.CtClass} object
      * @return list of test methods in the {@link javassist.CtClass} object
      */
-    public static List<String> find(final WildcardMatcher testsMatcher,
-        final CtClass ctClass) throws ClassNotFoundException {
+    public static List<String> find(final WildcardMatcher patternsToExclude,
+        final WildcardMatcher patternsToInclude, final CtClass ctClass) throws ClassNotFoundException {
         final List<String> testMethods = new ArrayList<String>();
 
         // load the test class using a default classloader
@@ -42,7 +43,7 @@ public class JUnitTestFinder {
                     if (looksLikeJUnitTestMethod(m)) {
                         String testMethodFullName = clazz.getName() + "::"
                             + m.getName() + test.getDisplayName();
-                        if (testsMatcher.matches(testMethodFullName)) {
+                        if (!patternsToExclude.matches(testMethodFullName) && patternsToInclude.matches(testMethodFullName)) {
                             testMethods.add(testMethodFullName);
                         }
                     }
@@ -59,7 +60,7 @@ public class JUnitTestFinder {
                 // non-parameterised atomic test case
                 String testMethodFullName = test.getTestClass().getName()
                     + "::" + test.getMethodName();
-                if (testsMatcher.matches(testMethodFullName)) {
+                if (!patternsToExclude.matches(testMethodFullName) && patternsToInclude.matches(testMethodFullName)) {
                     testMethods.add(testMethodFullName);
                 }
             }

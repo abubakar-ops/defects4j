@@ -15,18 +15,18 @@ import org.apache.commons.io.FileUtils;
 import edu.washington.cs.mut.util.WildcardMatcher;
 
 /**
- * Finds all test methods in a provided test directory that match a provided
- * pattern. By default all test methods in a test directory are considered. It
- * writes the name of each test method to a provided file (one test method name
- * per row). The name of each test method follows the following format:
+ * Finds all test methods in a provided test directory that match any provided
+ * pattern. It writes the name of each test method to a provided file (one test
+ * method name per row). The name of each test method follows the following
+ * format:
  *   <test class name>::<test method name>
  *
  * Usage:
  *   java edu.washington.cs.mut.testfinder.TestFinder \
  *     <output file path> \
  *     <test classes directory path>
- *     [patterns separated by ',', '*::*' by default]"
- *
+ *     <patterns to exclude separated by ','>"
+ *     <patterns to include separated by ','>"
  */
 public class TestFinder {
 
@@ -36,12 +36,13 @@ public class TestFinder {
         System.err.println("Usage: java " + TestFinder.class.getCanonicalName() +
           " <output file path>" +
           " <test classes directory path>" +
-          " [patterns separated by ',', '*::*' by default]");
+          " <patterns to exclude separated by ','>" +
+          " <patterns to include separated by ','>");
         System.exit(1);
     }
 
     public static void main(String ... args) throws Exception {
-        if (args.length != 2 && args.length != 3) {
+        if (args.length != 4) {
             usageAndExit();
         }
 
@@ -55,23 +56,8 @@ public class TestFinder {
             System.exit(1);
         }
 
-        String patterns = "*::*";
-        if (args.length == 3) {
-            patterns = args[2];
-        }
-
-        // Pre-process the test matchers
-        final List<WildcardMatcher> matchers = new ArrayList<WildcardMatcher>();
-        for (String pattern : patterns.split(",")) {
-            Matcher m = Pattern.compile("(?<className>[^:]+)?(::(?<methodName>[^:]+))?").matcher(pattern);
-            if (!m.matches()) {
-                usageAndExit();
-            }
-
-            String className  = m.group("className") == null ? "*" : m.group("className");
-            String methodName = m.group("methodName") == null ? "*" : m.group("methodName");
-            matchers.add(new WildcardMatcher(className + "::" + methodName));
-        }
+        WildcardMatcher patternsToExclude = new WildcardMatcher(args[2]);
+        WildcardMatcher patternsToInclude = new WildcardMatcher(args[3]);
 
         // Find all .class files and for each one find the test method declared
         // in the test class
@@ -79,10 +65,8 @@ public class TestFinder {
             FileInputStream fin = new FileInputStream(file);
             CtClass ctClass = classPool.makeClassIfNew(fin);
 
-            for (WildcardMatcher matcher : matchers) {
-                for (String testMethod : JUnitTestFinder.find(matcher, ctClass)) {
-                    outputFile.println(testMethod);
-                }
+            for (String testMethod : JUnitTestFinder.find(patternsToExclude, patternsToInclude, ctClass)) {
+                outputFile.println(testMethod);
             }
 
             ctClass.detach();

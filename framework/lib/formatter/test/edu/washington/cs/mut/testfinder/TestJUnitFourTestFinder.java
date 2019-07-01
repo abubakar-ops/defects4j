@@ -21,11 +21,13 @@ public class TestJUnitFourTestFinder {
 
     private static final ClassPool classPool = ClassPool.getDefault();
 
+    private static final WildcardMatcher excludeMatcher = new WildcardMatcher("");
+
     @Test
     public void testAbstractTestClass() throws Exception {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
         final CtClass ctClass = classPool.get(AbstractTestClass.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         System.err.println(tests.size());
         assertTrue(tests.isEmpty());
     }
@@ -34,7 +36,7 @@ public class TestJUnitFourTestFinder {
     public void testEmptyTestClass() throws Exception {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
         final CtClass ctClass = classPool.get(EmptyTestClass.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertTrue(tests.isEmpty());
     }
 
@@ -42,7 +44,7 @@ public class TestJUnitFourTestFinder {
     public void testMethodTimeout() throws Exception {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
         final CtClass ctClass = classPool.get(MethodTimeout.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertEquals(2, tests.size());
         assertEquals(MethodTimeout.class.getCanonicalName() + "::test1", tests.get(0));
         assertEquals(MethodTimeout.class.getCanonicalName() + "::test2", tests.get(1));
@@ -52,7 +54,7 @@ public class TestJUnitFourTestFinder {
     public void testNonJUnitTestClass() throws Exception {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
         final CtClass ctClass = classPool.get(NonJUnitTest.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertTrue(tests.isEmpty());
     }
 
@@ -60,7 +62,7 @@ public class TestJUnitFourTestFinder {
     public void testParameterizedTest() throws Exception {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
         final CtClass ctClass = classPool.get(ParameterizedTest.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertEquals(7, tests.size());
         assertEquals(ParameterizedTest.class.getCanonicalName() + "::testFibonacci[0]", tests.get(0));
         assertEquals(ParameterizedTest.class.getCanonicalName() + "::testFibonacci[1]", tests.get(1));
@@ -76,7 +78,7 @@ public class TestJUnitFourTestFinder {
         final WildcardMatcher matcher = new WildcardMatcher("*::*");
 
         CtClass ctClass = classPool.get(SimpleTest.class.getCanonicalName());
-        List<String> tests = JUnitTestFinder.find(matcher, ctClass);
+        List<String> tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertEquals(3, tests.size());
         assertEquals(SimpleTest.class.getCanonicalName() + "::test1", tests.get(0));
         assertEquals(SimpleTest.class.getCanonicalName() + "::test2", tests.get(1));
@@ -84,7 +86,7 @@ public class TestJUnitFourTestFinder {
         tests.clear();
 
         ctClass = classPool.get(Timeout.class.getCanonicalName());
-        tests = JUnitTestFinder.find(matcher, ctClass);
+        tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertEquals(3, tests.size());
         assertEquals(Timeout.class.getCanonicalName() + "::test1", tests.get(0));
         assertEquals(Timeout.class.getCanonicalName() + "::test2", tests.get(1));
@@ -92,7 +94,7 @@ public class TestJUnitFourTestFinder {
         tests.clear();
 
         ctClass = classPool.get(InitError.class.getCanonicalName());
-        tests = JUnitTestFinder.find(matcher, ctClass);
+        tests = JUnitTestFinder.find(excludeMatcher, matcher, ctClass);
         assertEquals(3, tests.size());
         assertEquals(InitError.class.getCanonicalName() + "::test1", tests.get(0));
         assertEquals(InitError.class.getCanonicalName() + "::test2", tests.get(1));
