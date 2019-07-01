@@ -163,32 +163,37 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
           Run each unit test case in isolation
         -->
 
-        <loadfile property="list.tests.to.run" srcfile="${tests.file}" />
-        <for param="test.to.run" list="${list.tests.to.run}" delimiter="${line.separator}">
-            <sequential>
-                <propertyregex property="test.class" input="@{test.to.run}" regexp="^(.*)::.*$" select="\1" />
-                <propertyregex property="test.method" input="@{test.to.run}" regexp="^.*::(.*)$" select="\1" />
-                <echo message="Running unit test '${test.method}' of the test class '${test.class}'" />
+        <if> <length file="${tests.file}" when="greater" length="0" /> <then>
+            <loadfile property="list.tests.to.run" srcfile="${tests.file}" />
+            <for param="test.to.run" list="${list.tests.to.run}" delimiter="${line.separator}" trim="true">
+                <sequential>
+                    <propertyregex property="test.class" input="@{test.to.run}" regexp="^(.*)::.*$" select="\1" />
+                    <propertyregex property="test.method" input="@{test.to.run}" regexp="^.*::(.*)$" select="\1" />
 
-                <junit printsummary="yes" haltonfailure="no" haltonerror="no" fork="no" showOutput="true">
-                    <classpath>
-                        <!-- Make sure that instrumented classes appear at the beginning of the
-                             classpath -->
-                        <pathelement location="${d4j.dir.classes.instrumented}" />
-                        <pathelement path="${formatter.jar}" />
-                        <pathelement path="${cobertura.jar}" />
-                        <path refid="d4j.test.classpath"/>
-                    </classpath>
+                    <echo message="Running unit test '${test.method}' of the test class '${test.class}'" />
 
-                    <sysproperty key="OUTFILE" value="${OUTFILE}"/>
-                    <formatter classname="edu.washington.cs.mut.testrunner.Formatter" usefile="false" />
-                    <test name="${test.class}" methods="${test.method}" />
-                </junit>
+                    <junit printsummary="yes" haltonfailure="no" haltonerror="no" fork="true" showOutput="true">
+                        <classpath>
+                            <!-- Make sure that instrumented classes appear at the beginning of the
+                                 classpath -->
+                            <pathelement location="${d4j.dir.classes.instrumented}" />
+                            <pathelement path="${junit.jar}" />
+                            <pathelement path="${formatter.jar}" />
+                            <pathelement path="${cobertura.jar}" />
+                            <path refid="d4j.test.classpath"/>
+                        </classpath>
 
-                <var name="test.class" unset="true" />
-                <var name="test.method" unset="true" />
-            </sequential>
-        </for>
+                        <sysproperty key="OUTFILE" value="${OUTFILE}"/>
+                        <formatter classname="edu.washington.cs.mut.testrunner.Formatter" usefile="false" />
+                        <test name="${test.class}" methods="${test.method}" />
+                    </junit>
+
+                    <var name="test.class" unset="true" />
+                    <var name="test.method" unset="true" />
+                </sequential>
+            </for>
+            </then>
+        </if>
     </target>
 
 <!--
