@@ -151,10 +151,20 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
         </if>
         <if> <isset property="tests.expr" /> <then>
             <property name="tests.file" value="${test.classes.dir}/tests_to_run.txt" />
-            <antcall target="collect.unit.tests" />
+            <if> <or>
+                     <contains string="${tests.expr}" substring="*" />
+                     <contains string="${tests.expr}" substring="?" />
+                 </or> <then>
+                <!-- Collect unit tests -->
+                <antcall target="collect.unit.tests" />
+            </then>
+            <else>
+                <echo message="${tests.expr}" file="${tests.file}" />
+            </else>
+            </if>
         </then>
         <else>
-            <!-- Run all relevant test cases -->
+            <!-- Set property to all relevant test cases -->
             <property name="tests.file" value="${d4j.dir.projects}/${d4j.project.id}/relevant_tests/${d4j.bug.id}"/>
         </else>
         </if>
