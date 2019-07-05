@@ -59,6 +59,7 @@
     <target name="jar" depends="compile" description="Build jar for this project">
         <jar destfile="${dir.jar}/formatter.jar" basedir="${dir.target.classes}">
             <zipgroupfileset dir="lib">
+                <include name="junit-4.11.jar" />
                 <include name="javassist-3.25.0-GA.jar" />
             </zipgroupfileset>
         </jar>
