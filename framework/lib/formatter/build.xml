@@ -69,7 +69,7 @@
         <delete file="failing-tests.txt"/>
         <junit fork="yes" timeout="1000" showoutput="true">
             <classpath refid="test.classpath" />
-            <formatter classname="edu.washington.cs.mut.testrunner.Formatter" usefile="no" />
+            <formatter classname="edu.washington.cs.mut.testlistener.JUnitFormatter" usefile="no" />
             <batchtest>
                 <fileset dir="${dir.src.tests}">
                     <include name="**/*.java"/>
