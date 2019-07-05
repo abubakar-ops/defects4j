@@ -5,12 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import javassist.ClassPool;
 import javassist.CtClass;
-import org.apache.commons.io.FileUtils;
 
 import edu.washington.cs.mut.util.WildcardMatcher;
 
@@ -61,7 +61,7 @@ public class TestFinder {
 
         // Find all .class files and for each one find the test method declared
         // in the test class
-        for (File file : FileUtils.listFiles(testsDir, new String[] {"class"}, true)) {
+        for (File file : TestFinder.getClassFiles(testsDir)) {
             FileInputStream fin = new FileInputStream(file);
             CtClass ctClass = classPool.makeClassIfNew(fin);
 
@@ -75,5 +75,20 @@ public class TestFinder {
 
         // Exit and indicate success
         System.exit(0);
+    }
+
+    public static Collection<File> getClassFiles(final File directory) {
+        List<File> classFiles = new ArrayList<File>();
+        if (directory == null || directory.listFiles() == null){
+            return classFiles;
+        }
+        for (File entry : directory.listFiles()) {
+            if (entry.isFile() && entry.getName().endsWith(".class")) {
+                classFiles.add(entry);
+            } else {
+                classFiles.addAll(getClassFiles(entry));
+            }
+        }
+        return classFiles;
     }
 }
