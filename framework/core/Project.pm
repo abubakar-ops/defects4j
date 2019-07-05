@@ -588,9 +588,7 @@ sub fix_tests {
     $bid = $1;
     my $dir = $self->test_dir($vid);
 
-    # TODO: Exclusively use version ids rather than revision ids
-    # -> The bug-mining script that populates the database should deal with any
-    # ID conversions.
+    # Remove tests that fail on the fixed version, if any
     my $revision_id = $self->lookup($vid);
     my $failing_tests_file = "$PROJECTS_DIR/$pid/failing_tests/$bid";
     if (-e $failing_tests_file) {
@@ -598,7 +596,7 @@ sub fix_tests {
     }
 
     # Remove flaky/dependent tests, if any
-    my $dependent_test_file = "$PROJECTS_DIR/$pid/dependent_tests/$revision_id";
+    my $dependent_test_file = "$PROJECTS_DIR/$pid/dependent_tests/$bid";
     if (-e $dependent_test_file) {
         $self->exclude_tests_in_file($dependent_test_file, $dir);
     }

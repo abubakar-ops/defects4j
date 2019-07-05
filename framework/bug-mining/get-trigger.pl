@@ -166,7 +166,8 @@ foreach my $bid (@bids) {
     # V2 must not have any failing tests
     my $list = _get_failing_tests($project, "$TMP_DIR/v2", "${bid}f");
     if (($data{$FAIL_V2} = (scalar(@{$list->{"classes"}}) + scalar(@{$list->{"methods"}}))) != 0) {
-        print("Non expected failing test classes/methods on ${PID}-${bid}\n");
+        $list = $list->{methods};
+        print "Non expected failing test classes/methods on ${PID}-${bid}:\n"  . join ("\n", @$list) . "\n";
         _add_row(\%data);
         next;
     }
@@ -215,7 +216,7 @@ foreach my $bid (@bids) {
 
     # Save dependent tests to $DEPENDENT_DIR/$revision_id
     my @dependent_tests = grep { !($_ ~~  @{$list}) } @fail_in_order;
-    my $dependent_tests_file = "$DEPENDENT_DIR/" . $project->lookup("${bid}f");
+    my $dependent_tests_file = "$DEPENDENT_DIR/$bid";
     for my $dependent_test (@dependent_tests) {
         print " ## Warning: Dependent test ($dependent_test) is being added to list.\n";
         system("echo '--- $dependent_test' >> $dependent_tests_file");
