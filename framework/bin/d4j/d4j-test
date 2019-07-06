@@ -28,13 +28,13 @@ d4j-test -- run tests on a checked-out project version.
 
 =head1 SYNOPSIS
 
-  d4j-test [-w work_dir] [-r | [-t single_test] [-s test_suite]]
+  d4j-test [-w work_dir] [-r | [-t tests] [-s test_suite]]
 
 =head1 DESCRIPTION
 
-This script executes a test or test suite on a checked-out project version and
-reports failing test cases. It also writes all failing test cases to the file
-F<failing_tests>.
+This script executes a set of tests or all tests on a checked-out project
+version and reports failing test cases. It also writes all failing test cases to
+the file F<failing_tests>.
 
 =head1 OPTIONS
 
@@ -50,10 +50,13 @@ the current directory.
 Only execute relevant developer-written tests (optional). By default all developer-written
 tests of the checked-out project version are executed.
 
-=item -t C<single_test>
+=item -t C<tests>
 
-Only run this single test method (optional). By default all tests are executed.
-Format: <test_class>::<test_method>.
+Only run a set of tests (optional). By default all tests are executed.
+Format: <test_class>::<test_method>, where <test_class> and <test_method> could
+be wildcards. For example, *::* runs all tests; org.foo.TestFoo::* runs all
+tests in class TestFoo; *::testX runs all tests named testX. More than one set
+of tests to run can be defined by using the separator ','.
 
 =item -s F<test_suite>
 
@@ -98,9 +101,9 @@ getopts('t:w:rs:', \%cmd_opts) or pod2usage( { -verbose => 1, -input => __FILE__
 
 my $WORK_DIR = Utils::get_abs_path($cmd_opts{w} // ".");
 my $REL_TESTS = defined $cmd_opts{r} ? 1 : 0;
-my $SINGLE_TEST = $cmd_opts{t};
+my $TESTS = $cmd_opts{t};
 my $TEST_SUITE = $cmd_opts{s};
-if ((defined $SINGLE_TEST || defined $TEST_SUITE) && $REL_TESTS==1) {
+if ((defined $TESTS || defined $TEST_SUITE) && $REL_TESTS==1) {
     pod2usage( { -verbose => 1, -input => __FILE__} );
 }
 
@@ -109,6 +112,10 @@ unless(defined $config) {
     print(STDERR "$WORK_DIR is not a valid working directory!\n");
     exit 1;
 }
+
+my $pid = $config->{$CONFIG_PID};
+my $vid = $config->{$CONFIG_VID};
+my $bid = Utils::check_vid($vid)->{bid};
 
 # Instantiate project and set working directory
 my $project = Project::create_project($config->{$CONFIG_PID});
@@ -124,15 +131,15 @@ if (defined $TEST_SUITE){
     my $test_dir = "$WORK_DIR/.test_suite";
     Utils::extract_test_suite($TEST_SUITE, $test_dir) or die;
     $project->compile_ext_tests($test_dir) or die "Cannot compile extracted test suite!";
-    $project->run_ext_tests($test_dir, "*.java", $tmp, $SINGLE_TEST) or die "Cannot run tests!";
+    $project->run_ext_tests($test_dir, $tmp, $TESTS) or die "Cannot run tests!";
 } elsif ($REL_TESTS) {
     # Compile and run only relevant developer-written tests
     $project->compile_tests() or die "Cannot compile test suite!";
-    $project->run_relevant_tests($tmp) or die "Cannot run tests!";
+    $project->run_relevant_tests($tmp, "$PROJECTS_DIR/$pid/relevant_tests/$bid") or die "Cannot run tests!";
 } else {
     # Compile and run developer-written tests
     $project->compile_tests() or die "Cannot compile test suite!";
-    $project->run_tests($tmp, $SINGLE_TEST) or die "Cannot run tests!";
+    $project->run_tests($tmp, $TESTS) or die "Cannot run tests!";
 }
 
 my $trigger = Utils::get_failing_tests($tmp) or die "Cannot determine triggering tests!";

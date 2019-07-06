@@ -2,13 +2,17 @@ package edu.washington.cs.mut.testrunner;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.PrintStream;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.net.URL;
 import java.net.URLClassLoader;
 import org.junit.runner.Result;
+
+import edu.washington.cs.mut.util.IsolatingClassLoader;
 
 /**
  * Runs, in isolation, all test methods defined in the provided intput file. The
@@ -42,6 +46,9 @@ public class MultipleTestRunner {
         // Get classpath
         final URL[] classpathURLs = ((URLClassLoader) Thread.currentThread().getContextClassLoader()).getURLs();
 
+        PrintStream loadedClassesPrintStream =
+            new PrintStream(new FileOutputStream(System.getProperty("LOADEDCLASSES", "loaded-classes.txt"), true), true);
+
         try (BufferedReader br = new BufferedReader(new FileReader(testMethodsFile))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -55,7 +62,7 @@ public class MultipleTestRunner {
                 String testMethodName = matcher.group("methodName");
 
                 // Run each unit test in isolation
-                TestTask testTask = new TestTask(classpathURLs, testClassName, testMethodName);
+                TestTask testTask = new TestTask(classpathURLs, loadedClassesPrintStream, testClassName, testMethodName);
                 Result result = TestRunner.run(testTask);
 
                 // "Release/Free" object

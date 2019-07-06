@@ -2,6 +2,8 @@ package edu.washington.cs.mut.util;
 
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * A classloader that should have the same classpath as the "normal" classloader, but shares
@@ -11,8 +13,11 @@ import java.net.URLClassLoader;
  */
 public class IsolatingClassLoader extends URLClassLoader {
 
+    private final Set<String> loadedClasses;
+
     public IsolatingClassLoader(final URL[] classpath, final ClassLoader parent) {
         super(classpath, parent);
+        this.loadedClasses = new LinkedHashSet<String>();
     }
 
     /**
@@ -21,9 +26,17 @@ public class IsolatingClassLoader extends URLClassLoader {
     @Override
     protected Class<?> loadClass(final String name, final boolean resolve)
           throws ClassNotFoundException {
+        this.loadedClasses.add(name);
 
-        if (name.startsWith("junit.") || name.startsWith("org.junit.")
-              || name.startsWith("org.hamcrest.")) {
+        if (// JUnit classes must be loaded by the super classloader. Otherwise,
+            // all sort of classloader issues occur
+            name.startsWith("junit.") || name.startsWith("org.junit.")
+              || name.startsWith("org.hamcrest.") ||
+            // Cobertura and EvoSuite classes must be loaded by the super
+            // classloader! Otherwise, neither of the two tools is able to
+            // collect and report code coverage
+            name.startsWith("net.sourceforge.cobertura.") ||
+            name.startsWith("org.evosuite.")) {
             return super.loadClass(name, resolve);
         }
 
@@ -41,5 +54,12 @@ public class IsolatingClassLoader extends URLClassLoader {
         }
 
         return c;
+    }
+
+    /**
+     * Returns the set of loaded classes.
+     */
+    public Set<String> getLoadedClasses() {
+        return this.loadedClasses;
     }
 }

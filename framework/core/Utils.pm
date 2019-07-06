@@ -272,6 +272,20 @@ sub tag_prefix {
 
 =pod
 
+  Utils::check_tests_expr(tests_expr)
+
+Checks whether a tests expression is valid.
+
+=cut
+sub check_tests_expr {
+    @_ == 1 or die $ARG_ERROR;
+    my ($tests_expr) = @_;
+    $tests_expr =~ /^([^:]+)::([^:,]+)(,([^:]+)::([^:,]+))*$/ or confess("Wrong tests expression: $tests_expr!");
+    return;
+}
+
+=pod
+
   Utils::exec_cmd(cmd, description [, log_ref])
 
 Runs a system command and indicates whether it succeeded or failed. This

@@ -28,22 +28,26 @@ d4j-monitor.test -- monitor class loader while running a single test class or te
 
 =head1 SYNOPSIS
 
-  d4j-monitor.test -t single_test [-w work_dir] [-s test_suite]
+  d4j-monitor.test -t tests [-w work_dir] [-s test_suite]
 
 =head1 DESCRIPTION
 
-This script runs a single test class or test method and monitors the class
-loader during execution. The script reports all source and test classes that were loaded
-during the execution of C<single_test>. It also writes all loaded source and test classes
-to F<loaded_classes.src> and F<loaded_classes.test>, respectively.
+This script runs a set of tests and monitors the class loader during execution.
+The script reports all source and test classes that were loaded during the
+execution of C<tests>. It also writes all loaded source and test classes to
+F<loaded_classes.src> and F<loaded_classes.test>, respectively.
 
 =head1 OPTIONS
 
 =over 4
 
-=item -t C<single_test>
+=item -t C<tests>
 
-Run this single test and monitor the class loader. Format: <test_class>[::<test_method>].
+Run this set of tests and monitor the class loader.
+Format: <test_class>::<test_method>, where <test_class> and <test_method> could
+be wildcards. For example, *::* runs all tests; org.foo.TestFoo::* runs all
+tests in class TestFoo; *::testX runs all tests named testX. More than one set
+of tests to run can be defined by using the separator ','.
 
 =item -w F<work_dir>
 
@@ -92,8 +96,8 @@ my %cmd_opts;
 getopts('t:w:s:', \%cmd_opts) or pod2usage( { -verbose => 1, -input => __FILE__} );
 
 my $WORK_DIR = Utils::get_abs_path($cmd_opts{w} // ".");
-my $TEST = $cmd_opts{t};
-defined $TEST or pod2usage( { -verbose => 1, -input => __FILE__} );
+my $TESTS = $cmd_opts{t};
+defined $TESTS or pod2usage( { -verbose => 1, -input => __FILE__} );
 my $TEST_SUITE = $cmd_opts{s};
 
 my $config = Utils::read_config_file("$WORK_DIR/$CONFIG");
@@ -106,40 +110,54 @@ unless(defined $config) {
 my $project = Project::create_project($config->{$CONFIG_PID});
 $project->{prog_root} = $WORK_DIR;
 
-my $test_dir = undef;
-# Compile the test suite, according to the provided flags
+# Obtain version
+my $vid = $config->{$CONFIG_VID};
+
+my $loadedClassesByTest = undef;
+# Compile the test suite, according to the provided flags, and monitor tests
 if (defined $TEST_SUITE) {
     # Extract and compile external test suite
-    $test_dir = "$WORK_DIR/.test_suite";
+    my $test_dir = "$WORK_DIR/.test_suite";
     Utils::extract_test_suite($TEST_SUITE, $test_dir) or die;
     $project->compile_ext_tests($test_dir) or die "Cannot compile extracted test suite!";
+    # Monitor external tests
+    $loadedClassesByTest = $project->monitor_ext_tests($vid, $TESTS, $test_dir);
 } else {
     # Compile developer-written test suite
     $project->compile_tests() or die "Cannot compile test suite!";
+    # Monitor developer-written tests
+    $loadedClassesByTest = $project->monitor_tests($vid, $TESTS);
 }
-
-# Obtain version and monitor the test
-my $vid = $config->{$CONFIG_VID};
-my $classes = $project->monitor_test($TEST, $vid, $test_dir);
-defined $classes or die "Cannot run test!";
+defined $loadedClassesByTest or die "Failed to run tests and collect loaded classes!";
 
 my $loaded_src = "$WORK_DIR/loaded_classes.src";
-my $loaded_test = "$WORK_DIR/loaded_classes.test";
+my %src;
 
+foreach(keys %{$loadedClassesByTest}) {
+    my $classes = ${$loadedClassesByTest}{$_};
+    foreach (@{$classes->{src}}) {
+        $src{$_} = 1;
+    }
+}
 open(OUT, ">$loaded_src") or die "Cannot write loaded classes";
 print("Loaded source classes:\n");
-for my $class (@{$classes->{src}}) {
-    print(OUT $class, "\n");
-    print("  - $class \n");
-}
+print "$_\n" for keys %src;
+print OUT "$_\n" for keys %src;
 close(OUT);
 
+my %test;
+my $loaded_test = "$WORK_DIR/loaded_classes.test";
+
+foreach(keys %{$loadedClassesByTest}) {
+    my $classes = ${$loadedClassesByTest}{$_};
+    foreach (@{$classes->{test}}) {
+        $test{$_} = 1;
+    }
+}
 open(OUT, ">$loaded_test") or die "Cannot write loaded test classes";
 print("Loaded test classes:\n");
-for my $class (@{$classes->{test}}) {
-    print(OUT $class, "\n");
-    print("  - $class \n");
-}
+print "$_\n" for keys %test;
+print OUT "$_\n" for keys %test;
 close(OUT);
 
 1;

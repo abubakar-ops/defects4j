@@ -493,40 +493,53 @@ sub compile_tests {
 
 =pod
 
-  $project->run_tests(result_file [, single_test])
+  $project->run_tests(result_file [, tests])
 
-Executes all developer-written tests in the checked-out program version. Failing tests are
-written to C<result_file>.
-If C<single_test> is provided, only this test method is run.
-Format of C<single_test>: <classname>::<methodname>.
+Executes all developer-written tests in the checked-out program version. Failing
+tests are written to C<result_file>.
+If C<tests> is provided, only the defined set of tests is executed.
+Format of C<tests>: <classname>::<methodname>. Wilcards such as * or ? could be
+used to define <test_class> and/or <test_method>. More than one set of tests to
+run can be defined by using the separator ','.
 
 =cut
 sub run_tests {
     @_ >= 2 or die $ARG_ERROR;
-    my ($self, $out_file, $single_test) = @_;
+    my ($self, $out_file, $tests) = @_;
 
-    my $single_test_opt = "";
-    if (defined $single_test) {
-        $single_test =~ /([^:]+)::([^:]+)/ or die "Wrong format for single test!";
-        $single_test_opt = "-Dtest.entry.class=$1 -Dtest.entry.method=$2";
+    my $tests_expr = "-Dtests.expr=*::*";
+    if (defined $tests) {
+        Utils::check_tests_expr($tests);
+        $tests_expr = "-Dtests.expr=$tests";
     }
 
-    return $self->_ant_call("run.dev.tests", "-DOUTFILE=$out_file $single_test_opt");
+    return $self->_ant_call("run.dev.tests", "-DOUTFILE=$out_file $tests_expr");
 }
 
 =pod
 
-  $project->run_relevant_tests(result_file)
+  $project->run_relevant_tests(result_file, relevant_tests_file)
 
 Executes only developer-written tests that are relevant to the bug of the checked-out
 program version. Failing tests are written to C<result_file>.
 
 =cut
 sub run_relevant_tests {
-    @_ == 2 or die $ARG_ERROR;
-    my ($self, $out_file) = @_;
+    @_ == 3 or die $ARG_ERROR;
+    my ($self, $out_file, $relevant_tests_file) = @_;
 
-    return $self->_ant_call("run.dev.tests", "-DOUTFILE=$out_file -Dd4j.relevant.tests.only=true");
+    -e $relevant_tests_file or die "File '$relevant_tests_file' does not exist!";
+
+    open(IN, "<$relevant_tests_file") or die "Cannot read $relevant_tests_file";
+    my @relevant_tests = ();
+    while(<IN>) {
+        s/\r?\n//;
+        push(@relevant_tests, $_);
+    }
+    close(IN);
+
+    my $tests_expr = join(",", @relevant_tests);
+    return $self->run_tests($out_file, $tests_expr);
 }
 
 =pod
@@ -547,25 +560,27 @@ sub compile_ext_tests {
 
 =pod
 
-  $project->run_ext_tests(test_dir, test_include, result_file [, single_test])
+  $project->run_ext_tests(test_dir, result_file [, tests])
 
-Execute all of the tests in F<test_dir> that match the pattern C<test_include>.
-Failing tests are written to F<result_file>.
-If C<single_test> is provided, only this test method is executed.
-Format of C<single_test>: <classname>::<methodname>.
+Execute all external tests in F<test_dir> that match the pattern C<tests>.
+Failing tests are written to F<result_file>. If C<tests> is provided, only the
+defined set of tests is executed. Format of C<tests>: <classname>::<methodname>.
+Wilcards such as * or ? could be used to define <test_class> and/or
+<test_method>. More than one set of tests to run can be defined by using the
+separator ','.
 
 =cut
 sub run_ext_tests {
-    @_ >= 4 or die $ARG_ERROR;
-    my ($self, $dir, $include, $out_file, $single_test) = @_;
+    @_ >= 3 or die $ARG_ERROR;
+    my ($self, $dir, $out_file, $tests) = @_;
 
-    my $single_test_opt = "";
-    if (defined $single_test) {
-        $single_test =~ /([^:]+)::([^:]+)/ or die "Wrong format for single test!";
-        $single_test_opt = "-Dtest.entry.class=$1 -Dtest.entry.method=$2";
+    my $tests_expr = "-Dtests.expr=*::*";
+    if (defined $tests) {
+        Utils::check_tests_expr($tests);
+        $tests_expr = "-Dtests.expr=$tests";
     }
 
-    return $self->_ant_call("run.gen.tests", "-DOUTFILE=$out_file -Dd4j.test.dir=$dir -Dd4j.test.include=$include $single_test_opt");
+    return $self->_ant_call("run.gen.tests", "-DOUTFILE=$out_file -Dd4j.test.dir=$dir $tests_expr");
 }
 
 =pod
@@ -606,67 +621,171 @@ sub fix_tests {
 
 =head2 Analysis related subroutines
 
-  $project->monitor_test(single_test, vid [, test_dir])
+  $project->monitor_tests(vid, tests)
 
-Executes C<single_test>, monitors the class loader, and returns a reference to a
-hash of list references, which store the loaded source and test classes.
-Format of C<single_test>: <classname>::<methodname>.
+Executes C<tests>, monitors the class loader, and returns a reference to a hash
+of list references, which store the loaded source and test classes.
+Format of C<tests>: <classname>::<methodname>. Wilcards such as * or ? could be
+used to define <test_class> and/or <test_method>. More than one set of tests to
+run can be defined by using the separator ','.
 
 This subroutine returns a reference to a hash with the keys C<src> and C<test>:
 
 =over 4
 
-  {src} => [org.foo.Class1 org.bar.Class2]
-  {test} => [org.foo.TestClass1 org.foo.TestClass2]
+  {org.foo.TestClass1#testBar} => (
+    {src} => [org.foo.Class1 org.bar.Class2]
+    {test} => [org.foo.TestClass1 org.foo.TestClass2]
+  )
 
 =back
 
 If the test execution fails, the returned reference is C<undef>.
 
 A class is included in the result if it exists in the source or test directory
-of the checked-out program version and if it was loaded during the test execution.
-
-The location of the test sources can be provided with the optional parameter F<test_dir>.
-The default is the test directory of the developer-written tests.
+of the checked-out program version and if it was loaded during the test
+execution.
 
 =cut
-sub monitor_test {
-    @_ >= 3 or die $ARG_ERROR;
-    my ($self, $single_test, $vid, $test_dir) = @_;
+sub monitor_tests {
+    @_ == 3 or die $ARG_ERROR;
+    my ($self, $vid, $tests) = @_;
     Utils::check_vid($vid);
-    $single_test =~ /^([^:]+)(::([^:]+))?$/ or die "Wrong format for single test!";
-    $test_dir = $test_dir // "$self->{prog_root}/" . $self->test_dir($vid);
+    Utils::check_tests_expr($tests);
 
-    my $log_file = "$self->{prog_root}/classes.log";
+    my $loaded_log_file = "$self->{prog_root}/loaded-classes.txt";
+    `>$loaded_log_file`;
 
-    my $classes = {
-        src  => [],
-        test => []
-    };
+    my $test_log_file = "$self->{prog_root}/tests.log";
+    `>$test_log_file`;
 
-    if (! $self->_ant_call("monitor.test", "-Dtest.entry=$single_test -Dtest.output=$log_file")) {
-        return undef;
+    # Run tests and collect loaded classes per test
+    $self->run_tests($test_log_file, $tests) || die "Failed to run '$tests' and collect list of loaded classes!";
+
+    # Let the user know if there are failing tests
+    -e $test_log_file or die "Test logs file '$test_log_file' does not exist!";
+    my $fail = Utils::get_failing_tests($test_log_file);
+    my $num_fail = (scalar(@{$fail->{classes}}) + scalar(@{$fail->{methods}}));
+    $num_fail == 0 or print(STDERR "WARNING: Some tests failed (see $test_log_file)!\n");
+
+    -e $loaded_log_file or die "Loaded classes file '$loaded_log_file' does not exist!";
+    my %loadedClassesByTest = ();
+
+    my $src = $self->_get_classes("$self->{prog_root}/" . $self->src_dir($vid));
+    my $test= $self->_get_classes("$self->{prog_root}/" . $self->test_dir($vid));
+
+    open(my $fh, '<', $loaded_log_file) or die "Cannot read $loaded_log_file'!";
+    while (my $row = <$fh>) {
+        chomp $row;
+        # org.foo.TestBar::test1#java.lang.Object,java.util.Set,org.foo.TestBar,org.foo.Bar,...
+        $row =~ /(.*)#(.*)/ || next;
+        my ($testName, $loadedClassesStr) = ($1, $2);
+
+        my $classes = {
+            src  => [],
+            test => []
+        };
+
+        my @loadedClasses = split(',', $loadedClassesStr);
+        foreach my $loadedClass (@loadedClasses) {
+            if (defined $src->{$loadedClass}) {
+                push(@{$classes->{src}}, $loadedClass);
+            }
+            if (defined $test->{$loadedClass}) {
+                push(@{$classes->{test}}, $loadedClass);
+            }
+        }
+
+        $loadedClassesByTest{$testName} = $classes;
     }
+    close($fh);
+
+    return \%loadedClassesByTest;
+}
+
+=pod
+
+  $project->monitor_ext_tests(vid, tests, test_src_dir)
+
+Executes C<tests>, monitors the class loader, and returns a reference to a hash
+of list references, which store the loaded source and test classes.
+Format of C<tests>: <classname>::<methodname>. Wilcards such as * or ? could be
+used to define <test_class> and/or <test_method>. More than one set of tests to
+run can be defined by using the separator ','.
+
+This subroutine returns a reference to a hash with the keys C<src> and C<test>:
+
+=over 4
+
+  {org.foo.TestClass1#testBar} => (
+    {src} => [org.foo.Class1 org.bar.Class2]
+    {test} => [org.foo.TestClass1 org.foo.TestClass2]
+  )
+
+=back
+
+If the test execution fails, the returned reference is C<undef>.
+
+A class is included in the result if it exists in the source or test directory
+of the checked-out program version and if it was loaded during the test
+execution.
+
+The location of the test sources can be provided with the optional parameter
+F<test_src_dir>. The default is the test directory of the developer-written
+tests.
+
+=cut
+sub monitor_ext_tests {
+    @_ == 4 or die $ARG_ERROR;
+    my ($self, $vid, $tests, $test_dir) = @_;
+    Utils::check_vid($vid);
+    Utils::check_tests_expr($tests);
+
+    my $list_test_file = "$self->{prog_root}/list-tests.txt";
+    `>$list_test_file`;
+
+    # Collect list of tests
+    $self->_ant_call("collect.unit.tests",
+        "-Dd4j.test.classes.dir=$test_dir -Dtests.expr=$tests -Dtests.file=$list_test_file") or die;
+    -e $list_test_file or die "Test logs file '$list_test_file' does not exist!";
 
     my $src = $self->_get_classes("$self->{prog_root}/" . $self->src_dir($vid));
     my $test= $self->_get_classes($test_dir);
 
-    my @log = `cat $log_file`;
-    foreach (@log) {
-        chomp;
-        s/\[Loaded ([^\$]*)(\$\S*)? from.*/$1/;
-        if (defined $src->{$_}) {
-            push(@{$classes->{src}}, $_);
-            # Delete already loaded classes to avoid duplicates in the result
-            delete($src->{$_});
+    my $loaded_per_test_log_file = "$self->{prog_root}/loaded-classes-per-test.txt";
+    my %loadedClassesByTest = ();
+
+    # Run test and monitor list of loaded classes
+    open(my $fh, '<', $list_test_file) or die "Cannot read $list_test_file'!";
+    while (my $testName = <$fh>) {
+        chomp $testName;
+
+        `>$loaded_per_test_log_file`;
+        $self->_ant_call("monitor.gen.tests",
+            "-Dd4j.test.dir=$test_dir -Dtest.entry=$testName -Dtest.output=$loaded_per_test_log_file") or die;
+
+        my $classes = {
+            src  => [],
+            test => []
+        };
+
+        my @log = `cat $loaded_per_test_log_file`;
+        foreach (@log) {
+            chomp;
+            s/\[Loaded ([^\$]*)(\$\S*)? from.*/$1/;
+            if (defined $src->{$_}) {
+                push(@{$classes->{src}}, $_);
+            }
+            if (defined $test->{$_}) {
+                push(@{$classes->{test}}, $_);
+            }
         }
-        if (defined $test->{$_}) {
-            push(@{$classes->{test}}, $_);
-            # Delete already loaded classes to avoid duplicates in the result
-            delete($test->{$_});
-        }
+
+        $loadedClassesByTest{$testName} = $classes;
     }
-    return $classes;
+    close($fh);
+
+    return \%loadedClassesByTest;
 }
 
 =pod

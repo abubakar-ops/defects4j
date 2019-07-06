@@ -30,7 +30,7 @@ fix_test_suite.pl -- remove failing tests from test suite until all tests pass.
 
 =head1 SYNOPSIS
 
-  fix_test_suite.pl -p project_id -d suite_dir [-f include_file_pattern] [-v version_id] [-s test_suite_src] [-t tmp_dir] [-A] [-D] [-L]
+  fix_test_suite.pl -p project_id -d suite_dir [-v version_id] [-s test_suite_src] [-t tmp_dir] [-A] [-D] [-L]
 
 =head1 OPTIONS
 
@@ -45,11 +45,6 @@ See L<Project|Project/"Available Project IDs"> module for available project IDs.
 
 The directory that contains the test suite archives.
 See L<Test suites|/"Test suites">.
-
-=item -f C<include_file_pattern>
-
-The pattern of the file names of the test classes that should be included (optional).
-Per default all files (*.java) are included.
 
 =item -v C<version_id>
 
@@ -136,7 +131,7 @@ use Log;
 # Process arguments and issue usage message if necessary.
 #
 my %cmd_opts;
-getopts('p:d:v:s:t:f:ADL', \%cmd_opts) or pod2usage(1);
+getopts('p:d:v:s:t:ADL', \%cmd_opts) or pod2usage(1);
 
 pod2usage(1) unless defined $cmd_opts{p} and defined $cmd_opts{d};
 
@@ -144,7 +139,6 @@ my $SUITE_DIR = abs_path($cmd_opts{d});
 my $PID = $cmd_opts{p};
 my $VID = $cmd_opts{v} if defined $cmd_opts{v};
 my $TEST_SRC = $cmd_opts{s} if defined $cmd_opts{s};
-my $INCL = $cmd_opts{f} // "*.java";
 my $RM_ASSERTS = defined $cmd_opts{A} ? 1 : 0;
 # Enable debugging if flag is set
 $DEBUG = 1 if defined $cmd_opts{D};
@@ -296,22 +290,22 @@ suite: foreach (@list) {
         }
 
         # Temporary log file to monitor failing tests
-        my $tests = Log::create_log("$TMP_DIR/run_tests.log", ">")->{file_name};
+        my $tests_log = Log::create_log("$TMP_DIR/run_tests.log", ">")->{file_name};
 
         # Check for errors of runtime system
-        if (! $project->run_ext_tests("$TMP_DIR/$src", "$INCL", $tests)) {
-            $SUMMARY_LOG->log_file(" - Tests not executable: $name", $tests);
+        if (! $project->run_ext_tests("$TMP_DIR/$src", $tests_log)) {
+            $SUMMARY_LOG->log_file(" - Tests not executable: $name", $tests_log);
             _insert_row($pid, $vid, $src, $tid);
             next suite;
         }
 
         # Check failing test classes and methods
-        my $list = Utils::get_failing_tests($tests) or die;
+        my $list = Utils::get_failing_tests($tests_log) or die;
         if (scalar(@{$list->{classes}}) != 0) {
             $SUMMARY_LOG->log_msg(" - Failing test classes: $name");
             $SUMMARY_LOG->log_msg(join("\n", @{$list->{classes}}));
             $SUMMARY_LOG->log_msg("Failing test classes are NOT automatically removed!");
-            $SUMMARY_LOG->log_file("Stack traces:", $tests);
+            $SUMMARY_LOG->log_file("Stack traces:", $tests_log);
             #
             # TODO: Automatically remove failing test classes?
             #
@@ -343,7 +337,7 @@ suite: foreach (@list) {
             --$counter;
             next;
         } else {
-            $RUN_LOG->log_file(scalar(@{$list->{methods}}) . " broken test method(s): $name", $tests);
+            $RUN_LOG->log_file(scalar(@{$list->{methods}}) . " broken test method(s): $name", $tests_log);
 
             # Reset counter and fix tests
             $counter = $RUNS;
@@ -351,7 +345,7 @@ suite: foreach (@list) {
             $fixed = 1;
             $SUMMARY_LOG->log_msg(" - Removing " . scalar(@{$list->{methods}}) . " broken test method(s): $name");
             $SUMMARY_LOG->log_msg(join("\n", @{$list->{methods}}));
-            Utils::exec_cmd("export D4J_RM_ASSERTS=$RM_ASSERTS && $UTIL_DIR/rm_broken_tests.pl $tests $TMP_DIR/$src", "Remove broken test method(s)")
+            Utils::exec_cmd("export D4J_RM_ASSERTS=$RM_ASSERTS && $UTIL_DIR/rm_broken_tests.pl $tests_log $TMP_DIR/$src", "Remove broken test method(s)")
                     or die "Cannot remove broken test method(s)";
             # Update counter
             $num_failing_tests += scalar(@{$list->{methods}});

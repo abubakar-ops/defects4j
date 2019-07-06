@@ -56,23 +56,23 @@ my $CORBETURA_REPORT = "$SCRIPT_DIR/projects/lib/cobertura-report.sh";
 
 =head2 Static subroutines
 
-  Coverage::coverage(project_ref, instrument_classes, src_dir, log_file, relevant_tests, [single_test, [merge_with]])
+  Coverage::coverage(project_ref, instrument_classes, src_dir, log_file, relevant_tests, [tests, [merge_with]])
 
 Measures code coverage for a provided L<Project> reference. F<instrument_classes>
 is the name of a file that lists all the classes which should be instrumented.  F<src_dir>
 provides the root directory of the source code, which is necessary to generate reports.
 
-The test results are written to F<log_file>, and the boolean parameter C<relevant_tests>
+The test results are written to F<log_file>, and the parameter F<relevant_tests>
 indicates whether only relevant test cases are executed.
 
-If C<single_test> is specified, only that test is run. This is meant to be used
-in conjunction with C<merge_with>, which is the path to another .ser file obtained by
-running coverage. This enables incremental analyses.
+If C<tests> is specified, only the defined set of tests is executed. This is
+meant to be used in conjunction with C<merge_with>, which is the path to another
+.ser file obtained by running coverage. This enables incremental analyses.
 
 =cut
 sub coverage {
 	@_ >= 5 or die $ARG_ERROR;
-	my ($project, $instrument_classes, $src_dir, $log_file, $relevant_tests, $single_test, $merge_with) = @_;
+	my ($project, $instrument_classes, $src_dir, $log_file, $relevant_tests, $tests, $merge_with) = @_;
 
     my $root = $project->{prog_root};
 	my $datafile = "$root/datafile";
@@ -87,9 +87,9 @@ sub coverage {
 
     # Execute test suite
     if ($relevant_tests) {
-        $project->run_relevant_tests($log_file) or return undef;
+        $project->run_relevant_tests($log_file, $relevant_tests) or return undef;
     } else {
-        $project->run_tests($log_file, $single_test) or return undef;
+        $project->run_tests($log_file, $tests) or return undef;
     }
 
 	# Generate coverage report
@@ -114,23 +114,23 @@ sub coverage {
 
 =pod
 
-  Coverage::coverage_ext(project, instrument_classes, src_dir, test_dir, include_pattern, log_file)
+  Coverage::coverage_ext(project, instrument_classes, src_dir, test_dir, log_file, [tests])
 
-Determines code coverage for an external test suite.
-F<instrument_classes> is the name of a file that lists all the classes which
-should be instrumented.  C<src_dir> provides the root directory of the source
-code, which is necessary to generate reports.
+Determines code coverage for an external test suite. F<instrument_classes> is
+the name of a file that lists all the classes which should be instrumented.
+C<src_dir> provides the root directory of the source code, which is necessary to
+generate reports.
 
 =cut
 sub coverage_ext {
-	@_ >= 6 or die $ARG_ERROR;
-	my ($project, $instrument_classes, $src_dir, $test_dir, $include, $log_file, $single_test) = @_;
+	@_ >= 5 or die $ARG_ERROR;
+	my ($project, $instrument_classes, $src_dir, $test_dir, $log_file, $tests) = @_;
 
     # Instrument all classes provided
 	$project->coverage_instrument($instrument_classes) or return undef;
 
     # Execute test suite
-	$project->run_ext_tests($test_dir, $include, $log_file, $single_test) or die "Could not run test suite";
+	$project->run_ext_tests($test_dir, $log_file, $tests) or die "Could not run test suite";
 
     # Generate coverage report
 	$project->coverage_report($src_dir) or die "Could not create report";

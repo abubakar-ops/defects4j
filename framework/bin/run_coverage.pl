@@ -30,7 +30,7 @@ run_coverage.pl -- code coverage analysis for generated test suites.
 
 =head1 SYNOPSIS
 
-  run_coverage.pl -p project_id -d suite_dir -o out_dir [-f include_file_pattern] [-v version_id] [-t tmp_dir] [-D] [-A | -i instrument_classes] [-I]
+  run_coverage.pl -p project_id -d suite_dir -o out_dir [-v version_id] [-t tmp_dir] [-D] [-A | -i instrument_classes] [-I]
 
 =head1 OPTIONS
 
@@ -49,11 +49,6 @@ See L<Test suites|/"Test suites">.
 =item -o F<out_dir>
 
 The output directory for the results and log files.
-
-=item -f C<include_file_pattern>
-
-The pattern of the file names of the test classes that should be included (optional).
-Per default all files (*.java) are included.
 
 =item -v C<version_id>
 
@@ -120,7 +115,7 @@ use DB;
 # Process arguments and issue usage message if necessary.
 #
 my %cmd_opts;
-getopts('p:d:v:t:o:f:i:DAI', \%cmd_opts) or pod2usage(1);
+getopts('p:d:v:t:o:i:DAI', \%cmd_opts) or pod2usage(1);
 
 pod2usage(1) unless defined $cmd_opts{p} and defined $cmd_opts{d} and defined $cmd_opts{o};
 
@@ -130,7 +125,6 @@ pod2usage(1) unless defined $cmd_opts{p} and defined $cmd_opts{d} and defined $c
 my $PID = $cmd_opts{p};
 my $SUITE_DIR = abs_path($cmd_opts{d});
 my $VID = $cmd_opts{v} if defined $cmd_opts{v};
-my $INCL = $cmd_opts{f} // "*.java";
 # Enable debugging if flag is set
 $DEBUG = 1 if defined $cmd_opts{D};
 
@@ -289,9 +283,9 @@ sub _run_coverage {
     my $test_log = "$TMP_DIR/.coverage.log"; `>$test_log`;
     my $cov_info;
     if (defined $INSTRUMENT_CLASSES) {
-      $cov_info = Coverage::coverage_ext($project, "$INSTRUMENT_CLASSES", $src_dir, $test_dir, $INCL, $test_log);
+      $cov_info = Coverage::coverage_ext($project, "$INSTRUMENT_CLASSES", $src_dir, $test_dir, $test_log);
     } else {
-      $cov_info = Coverage::coverage_ext($project, "$TARGET_CLASSES_DIR/$bid.src", $src_dir, $test_dir, $INCL, $test_log);
+      $cov_info = Coverage::coverage_ext($project, "$TARGET_CLASSES_DIR/$bid.src", $src_dir, $test_dir, $test_log);
     }
     if (Utils::has_failing_tests($test_log)) {
         $LOG->log_msg(" - Broken test suite: $archive");

@@ -1,32 +1,39 @@
 package edu.washington.cs.mut.testrunner;
 
+import java.io.PrintStream;
 import java.net.URL;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.runner.notification.RunListener;
+import edu.washington.cs.mut.testlistener.Listener;
 import edu.washington.cs.mut.util.IsolatingClassLoader;
 
 public class TestTask implements Callable<Result> {
 
     private static final AtomicInteger INC = new AtomicInteger();
 
-    protected final int id;
+    private final int id;
 
-    protected final URL[] classPathURLs;
+    private final URL[] classPathURLs;
 
-    protected final String testClassName;
+    private final PrintStream loadedClassesPrintStream;
 
-    protected final String testMethodName;
+    private final String testClassName;
+
+    private final String testMethodName;
 
     /**
      * Constructor for task to run a test method.
      */
-    protected TestTask(final URL[] classPathURLs, final String testClassName, final String testMethodName) {
+    protected TestTask(final URL[] classPathURLs, final PrintStream loadedClassesPrintStream,
+        final String testClassName, final String testMethodName) {
         this.id = INC.incrementAndGet();
         this.classPathURLs  = classPathURLs;
+        this.loadedClassesPrintStream = loadedClassesPrintStream;
         this.testClassName  = testClassName;
         this.testMethodName = testMethodName;
     }
@@ -60,6 +67,23 @@ public class TestTask implements Callable<Result> {
 
         // Close classloader object and return test result
         classLoader.close();
+
+        // Get loaded classes
+        Set<String> loadedClasses = classLoader.getLoadedClasses();
+        if (!loadedClasses.isEmpty()) {
+            StringBuilder loadedClassesStr = new StringBuilder();
+            loadedClassesStr.append(this.testClassName);
+            loadedClassesStr.append(Listener.TEST_CLASS_NAME_SEPARATOR);
+            loadedClassesStr.append(this.testMethodName);
+            loadedClassesStr.append("#");
+            for (String loadedClass : loadedClasses) {
+                loadedClassesStr.append(loadedClass);
+                loadedClassesStr.append(",");
+            }
+            // org.foo.TestBar::test1#java.lang.Object,java.util.Set,org.foo.TestBar,org.foo.Bar,...
+            this.loadedClassesPrintStream.println(loadedClassesStr.toString());
+        }
+
         return result;
     }
 

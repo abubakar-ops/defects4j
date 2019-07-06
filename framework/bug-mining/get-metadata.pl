@@ -174,22 +174,22 @@ foreach my $bid (@bids) {
     $project->compile() or die;
     $project->compile_tests() or die;
 
+    # Check if there is still any (unexpected) failing test case
+    my $tests_expr = join(",", @list);
+    my $log_file = "$TMP_DIR/tests.fail";
+    # Run triggering tests and verify that all pass
+    $project->run_tests($log_file, $tests_expr) or die;
+    # Get number of failing tests -> has to be 0
+    my $fail = Utils::get_failing_tests($log_file);
+    (scalar(@{$fail->{classes}}) + scalar(@{$fail->{methods}})) == 0 or die "There are unexpected failing tests on the fixed version!";
+
+    # Run trigger tests once more on the fixed version and collect list of loaded classes
     my %src;
     my %test;
-    foreach my $test (@list) {
-        my $log_file = "$TMP_DIR/tests.fail";
-
-        # Run triggering test and verify that it passes
-        $project->run_tests($log_file, $test) or die;
-
-        # Get number of failing tests -> has to be 0
-        my $fail = Utils::get_failing_tests($log_file);
-        (scalar(@{$fail->{classes}}) + scalar(@{$fail->{methods}})) == 0 or die;
-
-        # Run tests again and monitor class loader
-        my $loaded = $project->monitor_test($test, "${bid}f");
-        die unless defined $loaded;
-
+    my $loadedClassesByTest = $project->monitor_tests("${bid}f", $tests_expr);
+    defined $loadedClassesByTest or die "Failed to collect loaded classes!";
+    foreach(keys %{$loadedClassesByTest}) {
+        my $loaded = ${$loadedClassesByTest}{$_};
         foreach (@{$loaded->{src}}) {
             $src{$_} = 1;
         }
@@ -295,16 +295,14 @@ sub _export_relevant_tests {
     # Result: list of relevant tests
     my @relevant = ();
 
-    # Iterate over all tests and determine whether or not a test is relevant
-    my @all_tests = `cd $TMP_DIR && $SCRIPT_DIR/bin/defects4j export -ptests.all`;
-    foreach my $test (@all_tests) {
-        chomp($test);
-        print(STDERR "Analyze test: $test\n");
-        my $loaded = $project->monitor_test($test, "${bid}f");
-        die("Failed test: $test\n") unless (defined $loaded);
-
-        foreach my $class (@{$loaded->{src}}) {
-            if (defined $mod_classes{$class}) {
+    # Run all test cases, monitor loaded classes, and determine whether a test
+    # is relevant
+    my $loadedClassesByTest = $project->monitor_tests("${bid}f", "*::*");
+    defined $loadedClassesByTest or die "Failed to run all tests and collect loaded classes!";
+    for my $test (keys %{$loadedClassesByTest}) {
+        my $loaded = ${$loadedClassesByTest}{$test};
+        foreach(@{$loaded->{src}}) {
+            if (defined $mod_classes{$_}) {
                 push(@relevant, $test);
                 # A test is relevant if it loads at least one of the modified
                 # classes!
@@ -312,6 +310,8 @@ sub _export_relevant_tests {
             }
         }
     }
+
+    # Write list of relevant tests
     open(OUT, ">$RELEVANT/$bid") or die "Cannot write relevant tests";
     for (@relevant) {
         print(OUT $_, "\n");

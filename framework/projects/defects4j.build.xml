@@ -102,70 +102,27 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
     Run developer-written tests
 -->
     <target name="run.dev.tests" depends="compile.tests" description="Run unit tests">
+        <fail unless="tests.expr" />
+        <echo message="tests.expr: ${tests.expr}" />
 
-        <!--
-          Get list of all unit test cases to run
-        -->
-
-        <if>
-            <!-- Both test class name and test method name are defined -->
-            <and>
-                <isset property="test.entry.class" />
-                <isset property="test.entry.method" />
-            </and>
-            <then>
-                <property name="tests.expr" value="${test.entry.class}::${test.entry.method}" />
-            </then>
-            <!-- Only test class name is defined -->
-            <elseif>
-                <and>
-                    <isset property="test.entry.class" />
-                    <not> <isset property="test.entry.method" /> </not>
-                </and>
-                <then>
-                    <property name="tests.expr" value="${test.entry.class}::*" />
+        <property name="tests.file" value="${test.classes.dir}/tests_to_run.txt" />
+        <if> <or>
+                 <contains string="${tests.expr}" substring="*" />
+                 <contains string="${tests.expr}" substring="?" />
+             </or> <then>
+            <!-- Collect unit tests -->
+            <property name="d4j.test.classes.dir" value="${test.classes.dir}" />
+            <antcall target="collect.unit.tests" />
+        </then>
+        <else>
+            <if> <contains string="${tests.expr}" substring="," /> <then>
+                <propertyregex property="list.tests" input="${tests.expr}" regexp="," replace="\\${line.separator}" />
+                <echo message="${list.tests}" file="${tests.file}" />
                 </then>
-            </elseif>
-            <!-- Only test method name is defined -->
-            <elseif>
-                <and>
-                    <not> <isset property="test.entry.class" /> </not>
-                    <isset property="test.entry.method" />
-                </and>
-                <then>
-                    <property name="tests.expr" value="*::${test.entry.method}" />
-                </then>
-            </elseif>
-            <!-- Neither test class name or test method is defined -->
-            <elseif>
-                <and>
-                    <not> <isset property="test.entry.class" /> </not>
-                    <not> <isset property="test.entry.method" /> </not>
-                    <not> <available file="${d4j.dir.projects}/${d4j.project.id}/relevant_tests/${d4j.bug.id}" /> </not>
-                </and>
-                <then>
-                    <!-- Literally all unit test cases -->
-                    <property name="tests.expr" value="*::*" />
-                </then>
-            </elseif>
-        </if>
-        <if> <isset property="tests.expr" /> <then>
-            <property name="tests.file" value="${test.classes.dir}/tests_to_run.txt" />
-            <if> <or>
-                     <contains string="${tests.expr}" substring="*" />
-                     <contains string="${tests.expr}" substring="?" />
-                 </or> <then>
-                <!-- Collect unit tests -->
-                <antcall target="collect.unit.tests" />
-            </then>
             <else>
                 <echo message="${tests.expr}" file="${tests.file}" />
             </else>
             </if>
-        </then>
-        <else>
-            <!-- Set property to all relevant test cases -->
-            <property name="tests.file" value="${d4j.dir.projects}/${d4j.project.id}/relevant_tests/${d4j.bug.id}"/>
         </else>
         </if>
 
@@ -195,7 +152,8 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
     Test has to be provided as property "test.entry" (class::method)
     and the output is redirected to "test.output"
 -->
-    <target name="monitor.test" depends="compile.tests" description="Run a single test class or method and monitor class loader">
+    <target name="monitor.gen.tests" depends="compile.gen.tests" description="Run a single test class or method and monitor class loader">
+        <fail message="Property d4j.test.dir not set!" unless="d4j.test.dir" />
         <fail message="Property test.entry not set!" unless="test.entry" />
         <fail message="Property test.output not set!" unless="test.output" />
 
@@ -207,7 +165,7 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
             <classpath>
                 <pathelement path="${formatter.jar}" />
                 <pathelement path="${junit.jar}" />
-                <pathelement path="${build.home}/gen-tests" />
+                <pathelement path="${d4j.test.dir}" />
                 <path refid="d4j.test.classpath"/>
                 <!-- Add dependencies to runtime libraries of test generation tools -->
                 <path refid="d4j.lib.testgen.rt"/>
@@ -315,13 +273,13 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
         <fail message="Property build.home not set!" unless="build.home" />
         <fail message="Property classes.dir not set!" unless="classes.dir" />
 
+        <echo message="d4j.test.dir: ${d4j.test.dir}" />
         <echo message="classes.dir: ${classes.dir}" />
         <echo message="build.home: ${build.home}" />
 
-        <delete dir="${build.home}/gen-tests" quiet="true" />
-        <mkdir dir="${build.home}/gen-tests" />
+        <delete quiet="true"> <fileset dir="${d4j.test.dir}" includes="**/*.class"/> </delete>
         <javac srcdir="${d4j.test.dir}"
-               destdir="${build.home}/gen-tests"
+               destdir="${d4j.test.dir}"
                debug="true"
                deprecation="false"
                optimize="false">
@@ -338,40 +296,59 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
     Run generated tests
 -->
     <target name="run.gen.tests"  depends="compile.gen.tests" description="Run generated tests">
-        <!-- d4j.test.dir, d4j.test.include, and class.dir properties have to be provided by caller! -->
+        <!-- d4j.test.dir, tests.expr, and class.dir properties have to be provided by caller! -->
         <fail message="Property d4j.test.dir not set!" unless="d4j.test.dir" />
-        <fail message="Property d4j.test.include not set!" unless="d4j.test.include" />
+        <fail message="Property tests.expr not set!" unless="tests.expr" />
         <fail message="Property classes.dir not set!" unless="classes.dir" />
 
         <echo message="classes.dir: ${classes.dir}" />
         <echo message="build.home: ${build.home}" />
 
-        <junit printsummary="no" haltonfailure="no" haltonerror="no" fork="yes" forkmode="perBatch" showOutput="true">
-            <classpath>
-                <!-- Make sure that instrumented classes appear at the beginning of the
-                     classpath -->
-                <pathelement location="${d4j.dir.classes.instrumented}" />
-                <pathelement path="${build.home}/gen-tests" />
-                <pathelement path="${formatter.jar}" />
-                <pathelement path="${classes.dir}" />
-                <path refid="d4j.test.classpath"/>
-                <!-- Add dependencies to code coverage tools -->
-                <pathelement path="${cobertura.jar}" />
-                <!-- Add dependencies to runtime libraries of test generation tools -->
-                <path refid="d4j.lib.testgen.rt"/>
-            </classpath>
+        <property name="tests.file" value="${test.classes.dir}/tests_to_run.txt" />
+        <if> <or>
+                 <contains string="${tests.expr}" substring="*" />
+                 <contains string="${tests.expr}" substring="?" />
+             </or> <then>
+            <!-- Collect unit tests -->
+            <property name="d4j.test.classes.dir" value="${d4j.test.dir}" />
+            <antcall target="collect.unit.tests" />
+        </then>
+        <else>
+            <if> <contains string="${tests.expr}" substring="," /> <then>
+                <propertyregex property="list.tests" input="${tests.expr}" regexp="," replace="\\${line.separator}" />
+                <echo message="${list.tests}" file="${tests.file}" />
+                </then>
+            <else>
+                <echo message="${tests.expr}" file="${tests.file}" />
+            </else>
+            </if>
+        </else>
+        </if>
 
-            <sysproperty key="OUTFILE" value="${OUTFILE}"/>
-            <formatter classname="edu.washington.cs.mut.testrunner.Formatter" usefile="false" />
-            <test name="${test.entry.class}" methods="${test.entry.method}" if="test.entry.class" />
-                <batchtest unless="test.entry.class">
-                    <fileset dir="${d4j.test.dir}">
-                        <include name="**/${d4j.test.include}"/>
-                        <!-- Ignore helper classes that do not contain test cases -->
-                        <exclude name="**/*_scaffolding.java"/>
-                    </fileset>
-                </batchtest>
-        </junit>
+        <!--
+          Run each unit test case in isolation
+        -->
+
+        <if> <length file="${tests.file}" when="greater" length="0" /> <then>
+            <java classname="edu.washington.cs.mut.testrunner.MultipleTestRunner" fork="true">
+                <classpath>
+                    <!-- Make sure that instrumented classes appear at the beginning of the
+                         classpath -->
+                    <pathelement location="${d4j.dir.classes.instrumented}" />
+                    <pathelement path="${d4j.test.dir}" />
+                    <pathelement path="${formatter.jar}" />
+                    <pathelement path="${classes.dir}" />
+                    <path refid="d4j.test.classpath"/>
+                    <!-- Add dependencies to code coverage tools -->
+                    <pathelement path="${cobertura.jar}" />
+                    <!-- Add dependencies to runtime libraries of test generation tools -->
+                    <path refid="d4j.lib.testgen.rt"/>
+                </classpath>
+                <sysproperty key="OUTFILE" value="${OUTFILE}"/>
+                <arg value="${tests.file}" />
+            </java>
+            </then>
+        </if>
     </target>
 
 <!--
@@ -433,10 +410,10 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
     </target>
 
 <!--
-    Collect list of developer-written unit tests
+    Collect list of unit tests
 -->
     <target name="collect.unit.tests" depends="compile.tests" description="Collect list of developer-written unit tests">
-        <fail message="Property test.classes.dir not set!" unless="test.classes.dir" />
+        <fail message="Property d4j.test.classes.dir not set!" unless="d4j.test.classes.dir" />
         <fail message="Property tests.expr not set!" unless="tests.expr" />
         <fail message="Property tests.file not set!" unless="tests.file" />
 
@@ -488,11 +465,15 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
         <java classname="edu.washington.cs.mut.testfinder.TestFinder" fork="true">
             <classpath>
                 <pathelement location="${d4j.dir.classes.instrumented}" />
+                <pathelement path="${d4j.test.classes.dir}" />
                 <pathelement path="${formatter.jar}" />
+                <pathelement path="${classes.dir}" />
                 <path refid="d4j.test.classpath"/>
+                <!-- Add dependencies to runtime libraries of test generation tools -->
+                <path refid="d4j.lib.testgen.rt"/>
             </classpath>
             <arg value="${tests.file}" />
-            <arg value="${test.classes.dir}" />
+            <arg value="${d4j.test.classes.dir}" />
             <arg value="${exclude.tests.expr}" />
             <arg value="${tests.expr}" />
         </java>

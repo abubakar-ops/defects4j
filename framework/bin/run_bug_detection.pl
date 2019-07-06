@@ -30,7 +30,7 @@ run_bug_detection.pl -- bug detection analysis for generated test suites.
 
 =head1 SYNOPSIS
 
-  run_bug_detection.pl -p project_id -d suite_dir -o out_dir [-f include_file_pattern] [-v version_id] [-t tmp_dir] [-D]
+  run_bug_detection.pl -p project_id -d suite_dir -o out_dir [-v version_id] [-t tmp_dir] [-D]
 
 =head1 OPTIONS
 
@@ -49,11 +49,6 @@ See L<Test suites|/"Test suites">.
 =item -o F<out_dir>
 
 The output directory for the results and log files.
-
-=item -f C<include_file_pattern>
-
-The pattern of the file names of the test classes that should be included (optional).
-Per default all files (*.java) are included.
 
 =item -v C<version_id>
 
@@ -121,7 +116,7 @@ use DB;
 # Process arguments and issue usage message if necessary.
 #
 my %cmd_opts;
-getopts('p:d:v:t:o:f:D', \%cmd_opts) or pod2usage(1);
+getopts('p:d:v:t:o:D', \%cmd_opts) or pod2usage(1);
 
 pod2usage(1) unless defined $cmd_opts{p} and defined $cmd_opts{d} and defined $cmd_opts{o};
 
@@ -131,7 +126,6 @@ pod2usage(1) unless defined $cmd_opts{p} and defined $cmd_opts{d} and defined $c
 my $PID = $cmd_opts{p};
 my $SUITE_DIR = abs_path($cmd_opts{d});
 my $VID = $cmd_opts{v} if defined $cmd_opts{v};
-my $INCL = $cmd_opts{f} // "*.java";
 # Enable debugging if flag is set
 $DEBUG = 1 if defined $cmd_opts{D};
 
@@ -302,7 +296,7 @@ sub _run_tests {
     }
     # Run generated tests and log results
     my $log = "$TMP_DIR/run_V_fixed.log"; `>$log`;
-    if (! $project->run_ext_tests($test_dir, "$INCL", $log)) {
+    if (! $project->run_ext_tests($test_dir, $log)) {
         $LOG->log_msg(" - Tests not executable on fixed version: $archive");
         return undef;
     }
@@ -337,7 +331,7 @@ sub _run_tests {
     }
     # Run generated tests and log results
     $log = "$TMP_DIR/run_V_buggy.log"; `>$log`;
-    if (! $project->run_ext_tests($test_dir, "$INCL", $log)) {
+    if (! $project->run_ext_tests($test_dir, $log)) {
         $LOG->log_msg(" - Tests not executable on buggy version: $archive");
         return undef;
     }

@@ -120,22 +120,14 @@ foreach my $id (@ids) {
     # Result: list of relevant tests
     my @relevant = ();
 
-    my $error = 0;
-
-    # Iterate over all tests and determine whether or not a test is relevant
-    my @all_tests = `cd $TMP_DIR && $SCRIPT_DIR/bin/defects4j export -ptests.all`; 
-    foreach my $test (@all_tests) {
-        chomp($test);
-        print(STDERR "Analyze test: $test\n");
-        my $loaded = $project->monitor_test($test, $vid);
-        unless (defined $loaded) {
-            print(STDERR "Failed test: $test\n");
-            # Indicate error and skip all remaining tests
-            $error = 1;
-            last;
-        }
-        foreach my $class (@{$loaded->{src}}) {
-            if (defined $mod_classes{$class}) {
+    # Run all test cases, monitor loaded classes, and determine whether a test
+    # is relevant
+    my $loadedClassesByTest = $project->monitor_tests("$vid", "*::*");
+    defined $loadedClassesByTest or die "Failed to run all tests and collect loaded classes!";
+    for my $test (keys %{$loadedClassesByTest}) {
+        my $loaded = ${$loadedClassesByTest}{$test};
+        foreach(@{$loaded->{src}}) {
+            if (defined $mod_classes{$_}) {
                 push(@relevant, $test);
                 # A test is relevant if it loads at least one of the modified
                 # classes!
@@ -143,15 +135,12 @@ foreach my $id (@ids) {
             }
         }
     }
-    if ($error == 1) {
-        print(STDERR "Failed version: $id\n");
-    } else {
-        open(OUT, ">${out_dir}/${id}") or die "Cannot write relevant tests";
-        for (@relevant) {
-            print(OUT $_, "\n"); 
-        }
-        close(OUT);
+
+    open(OUT, ">${out_dir}/${id}") or die "Cannot write relevant tests";
+    for (@relevant) {
+        print(OUT $_, "\n");
     }
+    close(OUT);
 }
 # Clean up
 system("rm -rf $TMP_DIR");

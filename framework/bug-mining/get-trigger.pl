@@ -289,7 +289,7 @@ sub _get_failing_tests {
     $project->compile_tests() or die;
 
     # Run *all* developer-written tests and get number of failing tests
-    $project->run_tests($FAILED_TESTS_FILE, "*::*") or die;
+    $project->run_tests($FAILED_TESTS_FILE) or die;
     # Return failing tests
     return Utils::get_failing_tests($FAILED_TESTS_FILE);
 }

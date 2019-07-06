@@ -123,7 +123,7 @@ foreach my $bid (@ids) {
 
         my $failing_tests = "$TMP_DIR/.failing_tests";
         system(">$failing_tests");
-        $project->run_relevant_tests($failing_tests) or die "Could not run relevant tests: ${vid}";
+        $project->run_relevant_tests($failing_tests, "$PROJECTS_DIR/$PID/relevant_tests/$bid") or die "Could not run relevant tests: ${vid}";
         my $trigger = Utils::get_failing_tests($failing_tests) or die "Cannot determine triggering tests!";
         my $count = scalar(@{$trigger->{methods}}) + scalar(@{$trigger->{classes}});
         my %actual_triggers = ();
