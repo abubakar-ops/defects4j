@@ -20,10 +20,6 @@ import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
  */
 public class JUnitFormatter extends Listener implements JUnitResultFormatter {
 
-    private String testClassName;
-
-    private boolean alreadyPrinted = true;
-
     /**
      *
      */
@@ -36,7 +32,7 @@ public class JUnitFormatter extends Listener implements JUnitResultFormatter {
      */
     @Override
     public void startTest(Test test) {
-        super.onTestFinish(this.getName(test));
+        super.onTestStart(this.getName(test));
     }
 
     /**
@@ -52,8 +48,7 @@ public class JUnitFormatter extends Listener implements JUnitResultFormatter {
      */
     @Override
     public void startTestSuite(JUnitTest suite) throws BuildException {
-        this.testClassName = suite.getName();
-        this.alreadyPrinted = false;
+        super.onRunStart(suite.getName());
     }
 
     /**
@@ -69,7 +64,7 @@ public class JUnitFormatter extends Listener implements JUnitResultFormatter {
      */
     @Override
     public void addFailure(Test test, AssertionFailedError assertionFailedError) {
-        super.onTestFailure(this.handleFailure(test, assertionFailedError));
+        this.addError(test, assertionFailedError);
     }
 
     /**
@@ -77,7 +72,12 @@ public class JUnitFormatter extends Listener implements JUnitResultFormatter {
      */
     @Override
     public void addError(Test test, Throwable throwable) {
-        super.onTestFailure(this.handleFailure(test, throwable));
+        if (test == null) {
+            // if test is null it indicates an initialization error for the class
+            super.onTestFailure(this.failClass(throwable));
+        } else {
+            super.onTestFailure(this.handleFailure(this.getName(test), throwable));
+        }
     }
 
     /**
@@ -127,51 +127,5 @@ public class JUnitFormatter extends Listener implements JUnitResultFormatter {
         }
 
         return className + Listener.TEST_CLASS_NAME_SEPARATOR + methodName;
-    }
-
-    private String handleFailure(Test test, Throwable throwable) {
-        if (test == null) { // if test is null it indicates an initialization error for the class
-            return this.failClass(throwable);
-        }
-
-        String testFullName = this.getName(test);
-        String className = testFullName.split(Listener.TEST_CLASS_NAME_SEPARATOR)[0];
-        String methodName = testFullName.split(Listener.TEST_CLASS_NAME_SEPARATOR)[1];
-
-        if ("warning".equals(methodName) || "initializationError".equals(methodName)) {
-            return this.failClass(throwable); // there is an issue with the class, not the method.
-        } else if (null != methodName && null != className) {
-            if (this.isJunit4InitFail(throwable)) {
-                return this.failClass(throwable);
-            } else {
-                // normal case
-                return new String(Listener.TEST_FAILURE_PREFIX +
-                    testFullName + System.lineSeparator() +
-                    this.throwableToString(throwable));
-            }
-        } else {
-            return new String(Listener.TEST_FAILURE_PREFIX + "broken test input " +
-                test.toString() + System.lineSeparator() +
-                this.throwableToString(throwable));
-        }
-    }
-
-    private String failClass(Throwable throwable) {
-        if (!this.alreadyPrinted) {
-            this.alreadyPrinted = true;
-            return new String(Listener.TEST_FAILURE_PREFIX + this.testClassName +
-                System.lineSeparator() +
-                this.throwableToString(throwable));
-        }
-        return null;
-    }
-
-    private boolean isJunit4InitFail(Throwable throwable) {
-        for (StackTraceElement stackTraceElement: throwable.getStackTrace()) {
-            if ("createTest".equals(stackTraceElement.getMethodName())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

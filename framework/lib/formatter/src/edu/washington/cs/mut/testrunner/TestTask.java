@@ -61,8 +61,8 @@ public class TestTask implements Callable<Result> {
 
         // Run unit test
         JUnitCore runner = new JUnitCore();
-        runner.addListener((RunListener) Class
-            .forName("edu.washington.cs.mut.testlistener.JUnitListener", false, classLoader).newInstance());
+        Listener listener = (Listener) Class.forName("edu.washington.cs.mut.testlistener.JUnitListener", false, classLoader).newInstance();
+        runner.addListener(listener);
         Result result = runner.run(request);
 
         // Close classloader object and return test result
@@ -70,7 +70,7 @@ public class TestTask implements Callable<Result> {
 
         // Get loaded classes
         Set<String> loadedClasses = classLoader.getLoadedClasses();
-        if (!loadedClasses.isEmpty()) {
+        if (!loadedClasses.isEmpty() && !listener.isATestClassWithProblems()) {
             StringBuilder loadedClassesStr = new StringBuilder();
             loadedClassesStr.append(this.testClassName);
             loadedClassesStr.append(Listener.TEST_CLASS_NAME_SEPARATOR);

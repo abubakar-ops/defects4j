@@ -11,7 +11,7 @@ public final class JUnitListener extends Listener {
 
     @Override
     public void testRunStarted(final Description description) {
-        super.onRunStart();
+        super.onRunStart(description.getClassName());
     }
 
     @Override
@@ -31,9 +31,13 @@ public final class JUnitListener extends Listener {
 
     @Override
     public void testFailure(final Failure failure) {
-        super.onTestFailure(Listener.TEST_FAILURE_PREFIX +
-            this.getName(failure.getDescription()) + System.lineSeparator() +
-            this.throwableToString(failure.getException()));
+        Description description = failure.getDescription();
+        if (description.getMethodName() == null) {
+            // if test is null it indicates an initialization error for the class
+            super.onTestFailure(this.failClass(failure.getException()));
+        } else {
+            super.onTestFailure(this.handleFailure(this.getName(description), failure.getException()));
+        }
     }
 
     @Override

@@ -10,7 +10,7 @@ import org.junit.runner.notification.RunListener;
 /**
  * Test listener.
  */
-public class Listener extends RunListener {
+public abstract class Listener extends RunListener {
 
     public static final String TEST_FAILURE_PREFIX = "--- ";
 
@@ -19,6 +19,12 @@ public class Listener extends RunListener {
     private PrintStream failingTestsPrintStream;
 
     private PrintStream allTestsPrintStream;
+
+    private String testClassName = null;
+
+    private boolean alreadyPrinted = true;
+
+    private boolean testClassWithProblems = false;
 
     {
       try {
@@ -32,8 +38,9 @@ public class Listener extends RunListener {
     /**
      * Called before any tests have been run.
      */
-    public final void onRunStart() {
-        // empty
+    public final void onRunStart(final String testClassName) {
+        this.testClassName = testClassName;
+        this.alreadyPrinted = false;
     }
 
     /**
@@ -75,6 +82,53 @@ public class Listener extends RunListener {
      */
     public final void onTestSkipped() {
         // empty
+    }
+
+    public final boolean isATestClassWithProblems() {
+        return this.testClassWithProblems;
+    }
+
+    protected String handleFailure(String testFullName, Throwable throwable) {
+        String className  = testFullName.split(Listener.TEST_CLASS_NAME_SEPARATOR)[0];
+        String methodName = testFullName.split(Listener.TEST_CLASS_NAME_SEPARATOR)[1];
+
+        if ("warning".equals(methodName) || "initializationError".equals(methodName)) {
+            return this.failClass(throwable); // there is an issue with the class, not the method
+        } else if (null != methodName && null != className) {
+            if (this.isJunit4InitFail(throwable)) {
+                return this.failClass(throwable);
+            } else {
+                // normal case
+                return new String(Listener.TEST_FAILURE_PREFIX +
+                    testFullName + System.lineSeparator() +
+                    this.throwableToString(throwable));
+            }
+        } else {
+            this.testClassWithProblems = true;
+            return new String(Listener.TEST_FAILURE_PREFIX + "broken test input " +
+                testFullName + System.lineSeparator() +
+                this.throwableToString(throwable));
+        }
+    }
+
+    protected String failClass(Throwable throwable) {
+        this.testClassWithProblems = true;
+        if (!this.alreadyPrinted) {
+            this.alreadyPrinted = true;
+            return new String(Listener.TEST_FAILURE_PREFIX + this.testClassName +
+                System.lineSeparator() +
+                this.throwableToString(throwable));
+        }
+        return null;
+    }
+
+    private boolean isJunit4InitFail(Throwable throwable) {
+        for (StackTraceElement stackTraceElement: throwable.getStackTrace()) {
+            if ("createTest".equals(stackTraceElement.getMethodName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
