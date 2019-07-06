@@ -49,11 +49,15 @@ public class JUnitTestFinder {
                     }
                 }
             } else {
-                if (test.getTestClass().getName().equals("junit.framework.TestSuite$1") &&
-                      test.getMethodName().equals("warning")) {
+                if ("junit.framework.TestSuite$1".equals(test.getTestClass().getName()) &&
+                      "warning".equals(test.getMethodName())) {
                     // a JUnit 3 test class (i.e., one that extends junit.framework.TestCase)
                     // inherit a method named 'warning' from a super class 'junit.framework.TestSuite$1',
                     // which of course it is not a test method
+                    continue;
+                }
+                if ("initializationError".equals(test.getMethodName())) {
+                    // there is an issue with the class and this is not a test method
                     continue;
                 }
 
