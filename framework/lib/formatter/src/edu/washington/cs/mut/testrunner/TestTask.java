@@ -61,7 +61,7 @@ public class TestTask implements Callable<Result> {
 
         // Run unit test
         JUnitCore runner = new JUnitCore();
-        Listener listener = (Listener) Class.forName("edu.washington.cs.mut.testlistener.JUnitListener", false, classLoader).newInstance();
+        Listener listener = (Listener) new edu.washington.cs.mut.testlistener.JUnitListener();
         runner.addListener(listener);
         Result result = runner.run(request);
 
