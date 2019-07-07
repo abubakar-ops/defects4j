@@ -419,6 +419,11 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
 
         <property name="failing.tests.file" value="${d4j.dir.projects}/${d4j.project.id}/failing_tests/${d4j.bug.id}"/>
 
+        <property name="tests_to_include.file" value="${test.classes.dir}/tests_to_include.txt" />
+        <delete file="${tests_to_include.file}" />
+        <property name="tests_to_exclude.file" value="${test.classes.dir}/tests_to_exclude.txt" />
+        <delete file="${tests_to_exclude.file}" />
+
         <if> <available file="${failing.tests.file}" /> <then>
             <loadfile srcfile="${failing.tests.file}" property="failing.classes.list">
                 <filterchain>
@@ -434,28 +439,41 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
                     <striplinebreaks/>
                 </filterchain>
             </loadfile>
-            <if> <and> <isset property="failing.tests.list" /> <isset property="failing.classes.list" /> </and> <then>
-                <property name="exclude.tests.expr" value="${failing.tests.list}${failing.classes.list}" />
-                </then>
-                <elseif> <isset property="failing.tests.list" /> <then>
-                    <property name="exclude.tests.expr" value="${failing.tests.list}" />
-                </then>
-                </elseif>
-                <elseif> <isset property="failing.classes.list" /> <then>
-                    <property name="exclude.tests.expr" value="${failing.classes.list}" />
-                </then>
-                </elseif>
-                <else>
-                    <property name="exclude.tests.expr" value="" />
-                </else>
-            </if>
-
             <echo message="failing.classes.list: ${failing.classes.list}" />
             <echo message="failing.tests.list: ${failing.tests.list}" />
-            <echo message="exclude.tests.expr: ${exclude.tests.expr}" />
+
+            <if> <and> <isset property="failing.tests.list" /> <isset property="failing.classes.list" /> </and> <then>
+                <propertyregex property="list.tests.to.exclude" input="${failing.tests.list}" regexp="," replace="\\${line.separator}" />
+                <echo message="${list.tests.to.exclude}" file="${tests_to_exclude.file}" />
+                <propertyregex property="list.classes.to.exclude" input="${failing.classes.list}" regexp="," replace="\\${line.separator}" />
+                <echo message="${list.classes.to.exclude}" file="${tests_to_exclude.file}" append="true" />
+            </then>
+            <elseif> <isset property="failing.tests.list" /> <then>
+                <propertyregex property="list.tests.to.exclude" input="${failing.tests.list}" regexp="," replace="\\${line.separator}" />
+                <echo message="${list.tests.to.exclude}" file="${tests_to_exclude.file}" />
+            </then>
+            </elseif>
+            <elseif> <isset property="failing.classes.list" /> <then>
+                <propertyregex property="list.classes.to.exclude" input="${failing.classes.list}" regexp="," replace="\\${line.separator}" />
+                <echo message="${list.classes.to.exclude}" file="${tests_to_exclude.file}" />
+            </then>
+            </elseif>
+            <else>
+                <echo message="" file="${tests_to_exclude.file}" />
+            </else>
+            </if>
         </then>
         <else>
-            <property name="exclude.tests.expr" value="" />
+            <echo message="" file="${tests_to_exclude.file}" />
+        </else>
+        </if>
+
+        <if> <contains string="${tests.expr}" substring="," /> <then>
+            <propertyregex property="list.tests.to.include" input="${tests.expr}" regexp="," replace="\\${line.separator}" />
+            <echo message="${list.tests.to.include}" file="${tests_to_include.file}" />
+        </then>
+        <else>
+            <echo message="${tests.expr}" file="${tests_to_include.file}" />
         </else>
         </if>
 
@@ -474,8 +492,8 @@ project-specific build file ("project_id"/"project_id".build.xml) for the
             </classpath>
             <arg value="${tests.file}" />
             <arg value="${d4j.test.classes.dir}" />
-            <arg value="${exclude.tests.expr}" />
-            <arg value="${tests.expr}" />
+            <arg value="${tests_to_exclude.file}" />
+            <arg value="${tests_to_include.file}" />
         </java>
 
         <if> <not> <available file="${tests.file}" /> </not> <then>

@@ -1,8 +1,10 @@
 package edu.washington.cs.mut.testfinder;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,8 +27,8 @@ import edu.washington.cs.mut.util.WildcardMatcher;
  *   java edu.washington.cs.mut.testfinder.TestFinder \
  *     <output file path> \
  *     <test classes directory path>
- *     <patterns to exclude separated by ','>"
- *     <patterns to include separated by ','>"
+ *     <file with patterns to exclude (one pattern per line)>"
+ *     <file with patterns to include (one pattern per line)>"
  */
 public class TestFinder {
 
@@ -36,8 +38,8 @@ public class TestFinder {
         System.err.println("Usage: java " + TestFinder.class.getCanonicalName() +
           " <output file path>" +
           " <test classes directory path>" +
-          " <patterns to exclude separated by ','>" +
-          " <patterns to include separated by ','>");
+          " <file with patterns to exclude (one pattern per line)>" +
+          " <file with patterns to include (one pattern per line)>");
         System.exit(1);
     }
 
@@ -56,8 +58,8 @@ public class TestFinder {
             System.exit(1);
         }
 
-        WildcardMatcher patternsToExclude = new WildcardMatcher(args[2]);
-        WildcardMatcher patternsToInclude = new WildcardMatcher(args[3]);
+        WildcardMatcher patternsToExclude = constructMatcher(new File(args[2]));
+        WildcardMatcher patternsToInclude = constructMatcher(new File(args[3]));
 
         // Find all .class files and for each one find the test method declared
         // in the test class
@@ -90,5 +92,22 @@ public class TestFinder {
             }
         }
         return classFiles;
+    }
+
+    public static WildcardMatcher constructMatcher(File file) throws Exception {
+        if (!file.exists() || !file.canRead()) {
+            throw new RuntimeException(file + " does not exist or cannot be read");
+        }
+
+        StringBuilder str = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                str.append(line);
+                str.append(",");
+            }
+        }
+
+        return new WildcardMatcher(str.toString());
     }
 }
