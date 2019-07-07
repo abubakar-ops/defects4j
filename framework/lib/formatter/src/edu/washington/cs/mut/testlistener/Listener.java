@@ -18,23 +18,24 @@ public abstract class Listener extends RunListener {
 
     public static final String TEST_CLASS_NAME_SEPARATOR = "::";
 
-    private PrintStream failingTestsPrintStream;
+    private static PrintStream failingTestsPrintStream;
 
-    private PrintStream allTestsPrintStream;
+    private static PrintStream allTestsPrintStream;
+
+    private static Set<String> alreadyPrinted;
 
     private String testClassName = null;
 
-    private static Set<String> alreadyPrinted = new LinkedHashSet<String>();
-
     private boolean testClassWithProblems = false;
 
-    {
-      try {
-          this.failingTestsPrintStream = new PrintStream(new FileOutputStream(System.getProperty("OUTFILE", "failing-tests.txt"), true), true);
-          this.allTestsPrintStream = new PrintStream(new FileOutputStream(System.getProperty("ALLTESTS", "all_tests"), true), true);
-      } catch (FileNotFoundException e) {
-          throw new RuntimeException(e);
-      }
+    static {
+        try {
+            failingTestsPrintStream = new PrintStream(new FileOutputStream(System.getProperty("OUTFILE", "failing-tests.txt"), true), true);
+            allTestsPrintStream = new PrintStream(new FileOutputStream(System.getProperty("ALLTESTS", "all_tests"), true), true);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        alreadyPrinted = new LinkedHashSet<String>();
     }
 
     /**
@@ -55,7 +56,7 @@ public abstract class Listener extends RunListener {
      * Called when an atomic test is about to be started.
      */
     public final void onTestStart(final String testName) {
-        this.allTestsPrintStream.println(testName);
+        allTestsPrintStream.println(testName);
     }
 
     /**
@@ -74,7 +75,7 @@ public abstract class Listener extends RunListener {
         if (trace == null) {
             return;
         }
-        this.failingTestsPrintStream.println(trace);
+        failingTestsPrintStream.println(trace);
     }
 
     /**
