@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.junit.runner.notification.RunListener;
 
 /**
@@ -22,7 +24,7 @@ public abstract class Listener extends RunListener {
 
     private String testClassName = null;
 
-    private boolean alreadyPrinted = true;
+    private static Set<String> alreadyPrinted = new LinkedHashSet<String>();
 
     private boolean testClassWithProblems = false;
 
@@ -40,7 +42,6 @@ public abstract class Listener extends RunListener {
      */
     public final void onRunStart(final String testClassName) {
         this.testClassName = testClassName;
-        this.alreadyPrinted = false;
     }
 
     /**
@@ -113,8 +114,8 @@ public abstract class Listener extends RunListener {
 
     protected String failClass(Throwable throwable) {
         this.testClassWithProblems = true;
-        if (!this.alreadyPrinted) {
-            this.alreadyPrinted = true;
+        if (!alreadyPrinted.contains(this.testClassName)) {
+            alreadyPrinted.add(testClassName);
             return new String(Listener.TEST_FAILURE_PREFIX + this.testClassName +
                 System.lineSeparator() +
                 this.throwableToString(throwable));
