@@ -72,12 +72,8 @@ public class JUnitFormatter extends Listener implements JUnitResultFormatter {
      */
     @Override
     public void addError(Test test, Throwable throwable) {
-        if (test == null) {
-            // if test is null it indicates an initialization error for the class
-            super.onTestFailure(this.failClass(throwable));
-        } else {
-            super.onTestFailure(this.handleFailure(this.getName(test), throwable));
-        }
+        // if test is null it indicates an initialization error for the class
+        super.onTestFailure(test == null ? null : this.getName(test), throwable);
     }
 
     /**

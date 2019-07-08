@@ -71,11 +71,11 @@ public abstract class Listener extends RunListener {
     /**
      * Called when an atomic test fails.
      */
-    public final void onTestFailure(final String trace) {
-        if (trace == null) {
-            return;
+    public final void onTestFailure(String testFullName, Throwable throwable) {
+        String failureMessage = this.handleFailure(testFullName, throwable);
+        if (failureMessage != null) {
+            failingTestsPrintStream.println(failureMessage);
         }
-        failingTestsPrintStream.println(trace);
     }
 
     /**
@@ -90,7 +90,10 @@ public abstract class Listener extends RunListener {
         return this.testClassWithProblems;
     }
 
-    protected String handleFailure(String testFullName, Throwable throwable) {
+    private String handleFailure(String testFullName, Throwable throwable) {
+        if (testFullName == null) {
+            return this.failClass(throwable);
+        }
         String className  = testFullName.split(Listener.TEST_CLASS_NAME_SEPARATOR)[0];
         String methodName = testFullName.split(Listener.TEST_CLASS_NAME_SEPARATOR)[1];
 
@@ -113,7 +116,7 @@ public abstract class Listener extends RunListener {
         }
     }
 
-    protected String failClass(Throwable throwable) {
+    private String failClass(Throwable throwable) {
         this.testClassWithProblems = true;
         if (!alreadyPrinted.contains(this.testClassName)) {
             alreadyPrinted.add(testClassName);
