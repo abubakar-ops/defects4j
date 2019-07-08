@@ -141,8 +141,8 @@ public abstract class Listener extends RunListener {
      */
     protected final String throwableToString(Throwable exception) {
         StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
+        PrintWriter writer = new PrintWriter(stringWriter, true);
         exception.printStackTrace(writer);
-        return stringWriter.toString();
+        return stringWriter.getBuffer().toString();
     }
 }
