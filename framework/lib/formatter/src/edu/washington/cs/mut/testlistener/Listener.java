@@ -74,7 +74,7 @@ public abstract class Listener extends RunListener {
     public final void onTestFailure(String testFullName, Throwable throwable) {
         String failureMessage = this.handleFailure(testFullName, throwable);
         if (failureMessage != null) {
-            failingTestsPrintStream.println(failureMessage);
+            failingTestsPrintStream.print(failureMessage);
         }
     }
 
