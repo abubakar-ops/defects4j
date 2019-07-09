@@ -609,12 +609,6 @@ sub fix_tests {
     if (-e $failing_tests_file) {
         $self->exclude_tests_in_file($failing_tests_file, $dir);
     }
-
-    # Remove flaky/dependent tests, if any
-    my $dependent_test_file = "$PROJECTS_DIR/$pid/dependent_tests/$bid";
-    if (-e $dependent_test_file) {
-        $self->exclude_tests_in_file($dependent_test_file, $dir);
-    }
 }
 
 =pod

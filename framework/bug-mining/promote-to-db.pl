@@ -120,7 +120,7 @@ system("mkdir -p $OUTPUT_DIR/$PID");
 my $project = Project::create_project($PID);
 my $dbh_trigger = DB::get_db_handle($TAB_TRIGGER, $WORK_DIR);
 
-my @rev_specific_files = ("failing_tests/<rev>", "dependent_tests/<rev>", "build_files/<rev>");
+my @rev_specific_files = ("failing_tests/<rev>", "build_files/<rev>");
 my @id_specific_files = ("loaded_classes/<id>.src", "loaded_classes/<id>.test",
                             "modified_classes/<id>.src", "modified_classes/<id>.test",
                             "patches/<id>.src.patch", "patches/<id>.test.patch",
