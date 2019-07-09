@@ -163,9 +163,7 @@ foreach my $bid (@bids) {
     my $list = _get_failing_tests($project, "$TMP_DIR/v2", "${bid}f");
     if (($data{$FAIL_V2} = (scalar(@{$list->{"classes"}}) + scalar(@{$list->{"methods"}}))) != 0) {
         $list = $list->{methods};
-        print "Non expected failing test classes/methods on ${PID}-${bid}:\n"  . join ("\n", @$list) . "\n";
-        _add_row(\%data);
-        next;
+        die "Non expected failing test classes/methods on ${PID}-${bid}:\n"  . join ("\n", @$list) . "\n";
     }
 
     # V1 must not have failing test classes but at least one failing test method
@@ -173,9 +171,7 @@ foreach my $bid (@bids) {
     my $fail_c = scalar(@{$list->{"classes"}}); $data{$FAIL_C_V1} = $fail_c;
     my $fail_m = scalar(@{$list->{"methods"}}); $data{$FAIL_M_V1} = $fail_m;
     if ($fail_c !=0 or $fail_m == 0) {
-        print("Expected at least one failing test method on ${PID}-${bid}b\n");
-        _add_row(\%data);
-        next;
+        die("Expected at least one failing test method on ${PID}-${bid}b\n");
     }
 
     # Isolation part of workflow
@@ -205,17 +201,15 @@ foreach my $bid (@bids) {
     if (scalar(@{$list}) > 0) {
         system("cp $FAILED_TESTS_FILE $TRIGGER_DIR/$bid");
     } else {
-        print("No triggering test case has been found. This could either mean that no test" .
+        die("No triggering test case has been found. This could either mean that no test" .
               " has been executed or that all test cases pass (e.g., a javadoc change could" .
               " be considered bugfix however it might not be captured by any unit test case)\n");
     }
 
-    # Write dependent tests to the list of failing/flaky tests
-    my @failing_tests = grep { !($_ ~~  @{$list}) } @fail_in_order;
-    my $failing_tests_file = "$PROJECTS_DIR/failing_tests/$bid";
-    for my $failing_test (@failing_tests) {
-        print " ## Warning: Dependent test ($failing_test) is being added to list.\n";
-        system("echo '--- $failing_test' >> $failing_tests_file");
+    # Check if there is any unexpected failing test
+    my @unexpected_failing_tests = grep { !($_ ~~  @{$list}) } @fail_in_order;
+    if (scalar @unexpected_failing_tests > 0) {
+        die "Unexpected failing test classes/methods on ${PID}-${bid}:\n"  . join ("\n", @unexpected_failing_tests) . "\n";
     }
 
     # Add data
