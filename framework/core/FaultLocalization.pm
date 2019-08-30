@@ -394,6 +394,14 @@ sub _score_ranking {
         $MAX_SCORE_ALL_CLASSES => $max / $sloc_all,
         $MEAN_SCORE_ALL_CLASSES => $mean / $sloc_all,
         $MEDIAN_SCORE_ALL_CLASSES => $median / $sloc_all,
+
+        $SLOC_LOADED_CLASSES => $sloc_loaded,
+        $SLOC_ALL_CLASSES => $sloc_all,
+
+        $MIN_RANK_POSITION => $min,
+        $MAX_RANK_POSITION => $max,
+        $MEAN_RANK_POSITION => $mean,
+        $MEDIAN_RANK_POSITION => $median,
     };
 }
 
