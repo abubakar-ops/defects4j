@@ -164,15 +164,16 @@ if ($type eq "f") {
     exit 1;
 }
 
+my $log_file = "$WORK_DIR/.fault-localization.log";
+system("rm -f $log_file") if -e $log_file;
+
 # Instantiate project and set working directory
 my $project = Project::create_project($pid);
 $project->{prog_root} = $WORK_DIR;
+$project->compile($log_file) or die "Cannot compile source code!";
 
 # Classes to instrument for fault localization analysis -- default is all loaded classes
 my $classes_file = $INSTRUMENT // "$SCRIPT_DIR/projects/$pid/loaded_classes/$bid.src";
-
-my $log_file = "$WORK_DIR/.fault-localization.log";
-system("rm -f $log_file") if -e $log_file;
 
 #
 # Run the test suite, according to the provided flags.
@@ -182,16 +183,16 @@ if (defined $TEST_SUITE) {
     # Compile and run external test suite
     my $test_dir = "$WORK_DIR/.test_suite";
     Utils::extract_test_suite($TEST_SUITE, $test_dir) or die;
-    $project->compile_ext_tests($test_dir) or die "Cannot compile extracted test suite!";
+    $project->compile_ext_tests($test_dir, $log_file) or die "Cannot compile extracted test suite!";
     # Single or all test cases?
     my $single_test_opt = defined $SINGLE_TEST ? $SINGLE_TEST : undef;
     @fl_results = FaultLocalization::diagnose_ext($project, $bid, $classes_file, $FAMILY, $FORMULAS, $GRANULARITY, $test_dir, "*.java", $log_file, $single_test_opt);
 } elsif (defined $SINGLE_TEST) {
-    $project->compile_tests() or die "Cannot compile test suite!";
+    $project->compile_tests($log_file) or die "Cannot compile test suite!";
     # Run a single developer-written test
     @fl_results = FaultLocalization::diagnose($project, $bid, $classes_file, $FAMILY, $FORMULAS, $GRANULARITY, $log_file, undef, $SINGLE_TEST);
 } else {
-    $project->compile_tests() or die "Cannot compile test suite!";
+    $project->compile_tests($log_file) or die "Cannot compile test suite!";
     # Run all developer-written tests or only relevant developer-written tests
     @fl_results = FaultLocalization::diagnose($project, $bid, $classes_file, $FAMILY, $FORMULAS, $GRANULARITY, $log_file, $ALL_TESTS);
 }
@@ -207,19 +208,19 @@ if (scalar @fl_results == 0) {
 open(CSV, ">$WORK_DIR/fault_localization.csv") or die "Cannot write output csv file $!";
 
 # header
-print(CSV "Project,Bug,TestSuite,ScoringScheme,Family,Formula,ScoreAllClasses,ScoreLoadedClasses\n");
+print(CSV "Project,Bug,TestSuite,ScoringScheme,Family,Formula,ScoreAllClasses,ScoreLoadedClasses,SlocLoadedClasses,SlocAllClasses,RankPosition\n");
 
 # content
 my $test_suite_orig = defined $TEST_SUITE ? "external" : "developer";
 foreach my $fl_result(@fl_results) {
-    printf(CSV "%s,%d,%s,first,%s,%s,%.32f,%.32f\n",
-        $pid, $bid, $test_suite_orig, $fl_result->{$FL_FAMILY}, $fl_result->{$FL_FORMULA}, $fl_result->{$MIN_SCORE_ALL_CLASSES}, $fl_result->{$MIN_SCORE_LOADED_CLASSES});
-    printf(CSV "%s,%d,%s,last,%s,%s,%.32f,%.32f\n",
-        $pid, $bid, $test_suite_orig, $fl_result->{$FL_FAMILY}, $fl_result->{$FL_FORMULA}, $fl_result->{$MAX_SCORE_ALL_CLASSES}, $fl_result->{$MAX_SCORE_LOADED_CLASSES});
-    printf(CSV "%s,%d,%s,mean,%s,%s,%.32f,%.32f\n",
-        $pid, $bid, $test_suite_orig, $fl_result->{$FL_FAMILY}, $fl_result->{$FL_FORMULA}, $fl_result->{$MEAN_SCORE_ALL_CLASSES}, $fl_result->{$MEAN_SCORE_LOADED_CLASSES});
-    printf(CSV "%s,%d,%s,median,%s,%s,%.32f,%.32f\n",
-        $pid, $bid, $test_suite_orig, $fl_result->{$FL_FAMILY}, $fl_result->{$FL_FORMULA}, $fl_result->{$MEDIAN_SCORE_ALL_CLASSES}, $fl_result->{$MEDIAN_SCORE_LOADED_CLASSES});
+    printf(CSV "%s,%d,%s,first,%s,%s,%.32f,%.32f,%d,%d,%d\n",
+        $pid, $bid, $test_suite_orig, $fl_result->{$FL_FAMILY}, $fl_result->{$FL_FORMULA}, $fl_result->{$MIN_SCORE_ALL_CLASSES}, $fl_result->{$MIN_SCORE_LOADED_CLASSES}, $fl_result->{$SLOC_LOADED_CLASSES}, $fl_result->{$SLOC_ALL_CLASSES}, $fl_result->{$MIN_RANK_POSITION});
+    printf(CSV "%s,%d,%s,last,%s,%s,%.32f,%.32f,%d,%d,%d\n",
+        $pid, $bid, $test_suite_orig, $fl_result->{$FL_FAMILY}, $fl_result->{$FL_FORMULA}, $fl_result->{$MAX_SCORE_ALL_CLASSES}, $fl_result->{$MAX_SCORE_LOADED_CLASSES}, $fl_result->{$SLOC_LOADED_CLASSES}, $fl_result->{$SLOC_ALL_CLASSES}, $fl_result->{$MAX_RANK_POSITION});
+    printf(CSV "%s,%d,%s,mean,%s,%s,%.32f,%.32f,%d,%d,%d\n",
+        $pid, $bid, $test_suite_orig, $fl_result->{$FL_FAMILY}, $fl_result->{$FL_FORMULA}, $fl_result->{$MEAN_SCORE_ALL_CLASSES}, $fl_result->{$MEAN_SCORE_LOADED_CLASSES}, $fl_result->{$SLOC_LOADED_CLASSES}, $fl_result->{$SLOC_ALL_CLASSES}, $fl_result->{$MEAN_RANK_POSITION});
+    printf(CSV "%s,%d,%s,median,%s,%s,%.32f,%.32f,%d,%d,%d\n",
+        $pid, $bid, $test_suite_orig, $fl_result->{$FL_FAMILY}, $fl_result->{$FL_FORMULA}, $fl_result->{$MEDIAN_SCORE_ALL_CLASSES}, $fl_result->{$MEDIAN_SCORE_LOADED_CLASSES}, $fl_result->{$SLOC_LOADED_CLASSES}, $fl_result->{$SLOC_ALL_CLASSES}, $fl_result->{$MEDIAN_RANK_POSITION});
 
     printf("%30s: %s\n",    "Family",                        $fl_result->{$FL_FAMILY});
     printf("%30s: %s\n",    "Formula",                       $fl_result->{$FL_FORMULA});

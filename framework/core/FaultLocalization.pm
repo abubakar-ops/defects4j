@@ -342,7 +342,7 @@ sub _score_ranking {
             # Determine the minimum rank for all candidate ranks
             $current_rank = _get_min_rank(@cand_ranks);
             # Ranking does not contain any candidate line
-            if ($current_rank < 0) {
+            if (scalar(@cand_ranks) > 0 && $current_rank < 0) {
                 print(STDERR "WARNING: Fault of omission ($key) not found in ranking! None of the candidate lines matches!\n");
             }
         } else {
@@ -358,7 +358,7 @@ sub _score_ranking {
                 # Determine the minimum rank for all candidate ranks
                 $current_rank = _get_min_rank(@cand_ranks);
                 # Ranking does not contain any candidate line -> print error message and continue
-                if ($current_rank < 0) {
+                if (scalar(@cand_ranks) > 0 && $current_rank < 0) {
                     print(STDERR "WARNING: Fault ($key) not found in ranking! None of the candidate lines matches!\n");
                 }
             }
@@ -394,6 +394,14 @@ sub _score_ranking {
         $MAX_SCORE_ALL_CLASSES => $max / $sloc_all,
         $MEAN_SCORE_ALL_CLASSES => $mean / $sloc_all,
         $MEDIAN_SCORE_ALL_CLASSES => $median / $sloc_all,
+
+        $SLOC_LOADED_CLASSES => $sloc_loaded,
+        $SLOC_ALL_CLASSES => $sloc_all,
+
+        $MIN_RANK_POSITION => $min,
+        $MAX_RANK_POSITION => $max,
+        $MEAN_RANK_POSITION => $mean,
+        $MEDIAN_RANK_POSITION => $median,
     };
 }
 

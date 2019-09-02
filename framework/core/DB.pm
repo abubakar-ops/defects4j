@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Copyright (c) 2014-2018 René Just, Darioush Jalali, and Defects4J contributors.
+# Copyright (c) 2014-2019 René Just, Darioush Jalali, and Defects4J contributors.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -149,6 +149,8 @@ our $PROJECT       = "project_id";
 our $ID            = "version_id";
 
 # Additional columns of TAB_REV_PAIRS
+our $ISSUE_TRACKER_NAME = "tracker_name";
+our $ISSUE_TRACKER_ID = "tracker_id";
 our $DIFF_SRC      = "diff_size_src";
 our $DIFF_TEST     = "diff_size_test";
 our $COMP_V2       = "compile_v2";
@@ -197,6 +199,12 @@ our $MIN_SCORE_ALL_CLASSES       = "min_score_of_all_classes";
 our $MAX_SCORE_ALL_CLASSES       = "max_score_of_all_classes";
 our $MEAN_SCORE_ALL_CLASSES      = "mean_score_of_all_classes";
 our $MEDIAN_SCORE_ALL_CLASSES    = "median_score_of_all_classes";
+our $SLOC_LOADED_CLASSES         = "sloc_loaded_classes";
+our $SLOC_ALL_CLASSES            = "sloc_all_classes";
+our $MIN_RANK_POSITION           = "min_rank_position";
+our $MAX_RANK_POSITION           = "max_rank_position";
+our $MEAN_RANK_POSITION          = "mean_rank_position";
+our $MEDIAN_RANK_POSITION        = "median_rank_position";
 
 # Additional columns of TAB_CODE_EVOLUTION
 our $NUM_COMMITS      = "num_commits";
@@ -210,7 +218,7 @@ our $NUM_FAILING_TESTS             = "num_failing_tests";
 # Table definitions
 my %tables = (
 # TAB_REV_PAIRS
-$TAB_REV_PAIRS => [$PROJECT, $ID, $DIFF_SRC, $DIFF_TEST, $COMP_V2, $COMP_T2V2, $FAIL_T2V2, $COMP_V1, $COMP_T2V1, $MIN_SRC, $REVIEW_TESTS],
+$TAB_REV_PAIRS => [$PROJECT, $ID, $ISSUE_TRACKER_NAME, $ISSUE_TRACKER_ID, $DIFF_SRC, $DIFF_TEST, $COMP_V2, $COMP_T2V2, $FAIL_T2V2, $COMP_V1, $COMP_T2V1, $MIN_SRC, $REVIEW_TESTS],
 # Table TAB_TRIGGER
 $TAB_TRIGGER => [$PROJECT, $ID, $FAIL_V2, $FAIL_C_V1, $FAIL_M_V1, $PASS_ISO_V2, $FAIL_ISO_V1],
 # Table TAB_BUG_DETECTION
@@ -220,7 +228,7 @@ $TAB_MUTATION => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $MUT_GEN, $MUT_EXCL, $MU
 # Table TAB_COVERAGE
 $TAB_COVERAGE => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $LINES_TOTAL, $LINES_COVERED, $BRANCHES_TOTAL, $BRANCHES_COVERED],
 # Table TAB_FAULT_LOCALIZATION
-$TAB_FAULT_LOCALIZATION => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $FL_FAMILY, $FL_FORMULA, $MIN_SCORE_LOADED_CLASSES, $MAX_SCORE_LOADED_CLASSES, $MEAN_SCORE_LOADED_CLASSES, $MEDIAN_SCORE_LOADED_CLASSES, $MIN_SCORE_ALL_CLASSES, $MAX_SCORE_ALL_CLASSES, $MEAN_SCORE_ALL_CLASSES, $MEDIAN_SCORE_ALL_CLASSES],
+$TAB_FAULT_LOCALIZATION => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $FL_FAMILY, $FL_FORMULA, $MIN_SCORE_LOADED_CLASSES, $MAX_SCORE_LOADED_CLASSES, $MEAN_SCORE_LOADED_CLASSES, $MEDIAN_SCORE_LOADED_CLASSES, $MIN_SCORE_ALL_CLASSES, $MAX_SCORE_ALL_CLASSES, $MEAN_SCORE_ALL_CLASSES, $MEDIAN_SCORE_ALL_CLASSES, $SLOC_LOADED_CLASSES, $SLOC_ALL_CLASSES, $MIN_RANK_POSITION, $MAX_RANK_POSITION, $MEAN_RANK_POSITION, $MEDIAN_RANK_POSITION],
 # Table TAB_CODE_EVOLUTION
 $TAB_CODE_EVOLUTION => [$PROJECT, $ID, $TEST_SUITE, $TEST_ID, $NUM_COMMITS, $PASSED_COMMITS, $TEST_CLASS, $NUM_TRIGGER],
 # Table TAB_FIX
@@ -254,6 +262,8 @@ $TAB_FIX
 
 $PROJECT
 $ID
+$ISSUE_TRACKER_NAME
+$ISSUE_TRACKER_ID
 $DIFF_SRC
 $DIFF_TEST
 $COMP_V2
@@ -290,6 +300,12 @@ $MIN_SCORE_ALL_CLASSES
 $MAX_SCORE_ALL_CLASSES
 $MEAN_SCORE_ALL_CLASSES
 $MEDIAN_SCORE_ALL_CLASSES
+$SLOC_LOADED_CLASSES
+$SLOC_ALL_CLASSES
+$MIN_RANK_POSITION
+$MAX_RANK_POSITION
+$MEAN_RANK_POSITION
+$MEDIAN_RANK_POSITION
 $NUM_COMMITS
 $PASSED_COMMITS
 $NUM_UNCOMPILABLE_TESTS
