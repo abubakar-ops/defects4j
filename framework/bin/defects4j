@@ -138,6 +138,8 @@ export a version-specific property.
 =cut
 $cmd_descr{export}="export a version-specific property";
 
+$cmd_descr{combine}="combine multiple faults into a single program version";
+
 #
 # Issue usage message and quit
 #

@@ -368,15 +368,9 @@ sub checkout_vid {
     Utils::write_config_file("$work_dir/$CONFIG", {$CONFIG_PID => $pid, $CONFIG_VID => "${bid}f"});
 
     # Commit and tag the post-fix revision
-    my $tag_name = Utils::tag_prefix($pid, $bid) . $TAG_POST_FIX;
-    $cmd = "cd $work_dir" .
-           " && git init 2>&1" .
-           " && echo \".svn\" > .gitignore" .
-           " && git add -A 2>&1" .
-           " && git commit -a -m $tag_name 2>&1" .
-           " && git tag $tag_name 2>&1";
-    Utils::exec_cmd($cmd, "Tag post-fix revision")
-            or confess("Couldn't tag post-fix revision!");
+    $self->tag(Utils::tag_prefix($pid, $bid) . $TAG_POST_FIX, 
+        "Tag post-fix revision", 
+        "Couldn't tag post-fix revision!");
 
     # Check whether post-checkout hook is provided
     if (defined $self->{_vcs}->{_co_hook}) {
@@ -390,13 +384,9 @@ sub checkout_vid {
         # Anything to commit?
         if ($changes) {
             # Commit and tag the compilable post-fix revision
-            my $tag_name = Utils::tag_prefix($pid, $bid) . $TAG_POST_FIX_COMP;
-            $cmd = "cd $work_dir" .
-                   " && git add -A 2>&1" .
-                   " && git commit -a -m \"$tag_name\" 2>&1" .
-                   " && git tag $tag_name 2>&1";
-            Utils::exec_cmd($cmd, "Run post-checkout hook")
-                    or confess("Couldn't tag version after applying checkout hook!");
+            $self->tag(Utils::tag_prefix($pid, $bid) . $TAG_POST_FIX_COMP, 
+                "Run post-checkout hook", 
+                "Couldn't tag version after applying checkout hook!");
         }
     }
 
@@ -407,13 +397,9 @@ sub checkout_vid {
     $self->_write_props($vid, $is_bugmine);
 
     # Commit and tag the fixed program version
-    $tag_name = Utils::tag_prefix($pid, $bid) . $TAG_FIXED;
-    $cmd = "cd $work_dir" .
-           " && git add -A 2>&1" .
-           " && git commit -a -m \"$tag_name\" 2>&1" .
-           " && git tag $tag_name 2>&1";
-    Utils::exec_cmd($cmd, "Initialize fixed program version")
-            or confess("Couldn't tag fixed program version!");
+    $self->tag(Utils::tag_prefix($pid, $bid) . $TAG_FIXED,
+        "Initialize fixed program version",
+        "Couldn't tag fixed program version!");
 
     # Apply patch to obtain buggy version
     my $patch_dir =  "$PROJECTS_DIR/$pid/patches";
@@ -424,13 +410,9 @@ sub checkout_vid {
     Utils::write_config_file("$work_dir/$CONFIG", {$CONFIG_PID => $pid, $CONFIG_VID => "${bid}b"});
 
     # Commit and tag the buggy program version
-    $tag_name = Utils::tag_prefix($pid, $bid) . $TAG_BUGGY;
-    $cmd = "cd $work_dir" .
-           " && git add -A 2>&1" .
-           " && git commit -a -m \"$tag_name\" 2>&1" .
-           " && git tag $tag_name 2>&1";
-    Utils::exec_cmd($cmd, "Initialize buggy program version")
-            or confess("Couldn't tag buggy program version!");
+    $self->tag(Utils::tag_prefix($pid, $bid) . $TAG_BUGGY,
+        "Initialize buggy program version",
+        "Couldn't tag buggy program version!");
 
     # Checkout post-fix revision and apply unmodified diff to obtain the pre-fix revision
     my $tmp_file = "$work_dir/.defects4j.diff";
@@ -447,22 +429,54 @@ sub checkout_vid {
     system("rm $tmp_file");
 
     # Commit and tag the pre-fix revision
-    $tag_name = Utils::tag_prefix($pid, $bid) . $TAG_PRE_FIX;
-    $cmd = "cd $work_dir" .
-           " && git add -A 2>&1" .
-           " && git commit -a -m \"$tag_name\" 2>&1" .
-           " && git tag $tag_name 2>&1";
-    Utils::exec_cmd($cmd, "Tag pre-fix revision")
-            or confess("Couldn't tag pre-fix revision!");
+    $self->tag(Utils::tag_prefix($pid, $bid) . $TAG_PRE_FIX,
+        "Tag pre-fix revision",
+        "Couldn't tag pre-fix revision!");
 
     # Checkout the requested program version
-    $tag_name = Utils::tag_prefix($pid, $bid) . ($version_type eq "b" ? $TAG_BUGGY : $TAG_FIXED);
+    my $tag_name = Utils::tag_prefix($pid, $bid) . ($version_type eq "b" ? $TAG_BUGGY : $TAG_FIXED);
     $cmd = "cd $work_dir && git checkout $tag_name 2>&1";
     Utils::exec_cmd($cmd, "Check out program version: $pid-$vid")
             or confess("Couldn't check out program version!");
     return 1;
 }
 
+sub apply_patches {
+    my ($self, $vid, @patches) = @_;
+    my $pid = $self->{pid};
+
+    my $tmp = Utils::check_vid($vid);
+    my $bid = $tmp->{bid};
+
+    my $work_dir = $self->{prog_root} ;
+    foreach my $p (@patches)
+    {
+        my $patch_dir = "$SCRIPT_DIR/projects/$pid/patches";
+        my $src_patch = "$patch_dir/${p}.src.patch";
+        $self->apply_patch($work_dir, $src_patch) or return 0;
+    }
+    $self->tag(Utils::tag_prefix($pid, $bid) . $TAG_POST_PATCH,
+        "Creating tag after patching",
+        "Could not create post-patch tag");
+}
+
+sub tag {
+    my ($self, $tag_name, $success_msg, $failure_msg) = @_;
+    my $pid = $self->{pid};
+    my $work_dir = $self->{prog_root};
+
+    my $cmd = "cd $work_dir";
+    if (! -d "$work_dir/.git"){
+        $cmd = $cmd . " && git init 2>&1" .
+           " && echo \".svn\" > .gitignore"
+    }
+    $cmd = $cmd .
+           " && git add -A 2>&1" .
+           " && git commit -a -m $tag_name 2>&1" .
+           " && git tag $tag_name 2>&1";
+    Utils::exec_cmd($cmd, $success_msg)
+            or confess($failure_msg);
+}
 
 
 =pod
